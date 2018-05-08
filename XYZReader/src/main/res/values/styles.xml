@@ -18,7 +18,10 @@
 <resources>
 
     <style name="Theme.Bacon" parent="@style/Theme.AppCompat.Light.NoActionBar">
+        <item name="coordinatorLayoutStyle">@style/Widget.Design.CoordinatorLayout</item>
 
+        <item name="android:colorPrimary">@color/theme_primary</item>
+        <item name="android:colorAccent">@color/theme_accent</item>
     </style>
 
     <style name="Theme.Bacon.Detail">
