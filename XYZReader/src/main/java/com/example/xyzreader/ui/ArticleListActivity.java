@@ -4,16 +4,22 @@ import android.arch.lifecycle.Observer;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
 import android.support.v7.widget.DividerItemDecoration;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.format.DateUtils;
+import android.widget.Toast;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.UpdaterService;
@@ -30,6 +36,7 @@ import com.example.xyzreader.data.model.Article;
 import com.example.xyzreader.databinding.ActivityArticleListBinding;
 import com.example.xyzreader.databinding.ListItemArticleBinding;
 import com.squareup.picasso.Picasso;
+import com.squareup.picasso.Target;
 
 import javax.inject.Inject;
 
@@ -67,8 +74,6 @@ public class ArticleListActivity extends AppCompatActivity
                 new StaggeredGridLayoutManager(columnCount, StaggeredGridLayoutManager.VERTICAL);
         mBinding.recyclerView.setLayoutManager(layoutManager);
         mBinding.recyclerView.setAdapter(mAdapter);
-        mBinding.recyclerView.addItemDecoration(
-                new DividerItemDecoration(this, DividerItemDecoration.VERTICAL));
 
         mArticlesIds = null;
         articlesDao.getArticlesAsObservable().observe(this, new Observer<List<Article>>() {
@@ -177,7 +182,38 @@ public class ArticleListActivity extends AppCompatActivity
             mBinding.articleSubtitle.setText(text);
             Picasso.get()
                     .load(article.getThumbnailUrl())
-                    .into(mBinding.articleImageThumbnail);
+                    .into(new Target() {
+                        @Override
+                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
+                            mBinding.articleImageThumbnail.setImageBitmap(bitmap);
+
+                            Palette.from(bitmap)
+                                    .generate(new Palette.PaletteAsyncListener() {
+                                        @Override
+                                        public void onGenerated(@NonNull Palette palette) {
+                                            Palette.Swatch textSwatch = palette.getDominantSwatch();
+
+                                            if (textSwatch != null) {
+                                                mBinding.articleTitle.setTextColor(textSwatch.getTitleTextColor());
+                                                mBinding.articleSubtitle.setTextColor(textSwatch.getBodyTextColor());
+
+                                                mBinding.textBackground.setBackgroundColor(textSwatch.getRgb());
+                                                mBinding.textBackground.setAlpha(1f);
+                                            }
+                                        }
+                                    });
+                        }
+
+                        @Override
+                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
+
+                        }
+
+                        @Override
+                        public void onPrepareLoad(Drawable placeHolderDrawable) {
+
+                        }
+                    });
         }
     }
 }
