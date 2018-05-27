@@ -5,13 +5,13 @@
         <variable name="article"
             type="com.example.xyzreader.data.model.Article"/>
         <variable name="callback"
-            type="com.example.xyzreader.ui.ArticleAdapter.ArticleClickCallback"/>
+            type="com.example.xyzreader.ui.ArticlesListAdapter.ArticleClickCallback"/>
     </data>
 
     <android.support.constraint.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:onClick="@{() ->  callback.onListItemClick(article)}"
+        android:onClick="@{(view) ->  callback.onListItemClick(view, article)}"
         android:clickable="true"
         android:focusable="true"
         android:foreground="?selectableItemBackground">
@@ -20,11 +20,12 @@
             android:id="@+id/article_image_thumbnail"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="120dp"
-            android:maxHeight="200dp"
+            android:minHeight="100dp"
+            android:maxHeight="180dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:background="@color/photo_placeholder" />
+            android:background="@color/photo_placeholder"
+            android:transitionName="@string/transition_article_image"/>
 
         <View
             android:id="@+id/text_background"
@@ -45,10 +46,11 @@
             android:textColor="@color/ltgray"
             android:ellipsize="end"
             android:maxLines="4"
+            android:transitionName="@string/transition_article_title"
             app:layout_constraintTop_toBottomOf="@id/article_image_thumbnail"/>
 
         <TextView
-            android:id="@+id/article_subtitle"
+            android:id="@+id/article_byline"
             style="@style/TextAppearance.AppCompat.Body1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -58,6 +60,7 @@
             android:textColor="#6000"
             android:maxLines="2"
             android:ellipsize="end"
+            android:transitionName="@string/transition_article_byline"
             app:layout_constraintTop_toBottomOf="@id/article_title"/>
 
     </android.support.constraint.ConstraintLayout>

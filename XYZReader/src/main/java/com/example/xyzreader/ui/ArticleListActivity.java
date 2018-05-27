@@ -1,42 +1,35 @@
 package com.example.xyzreader.ui;
 
-import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.databinding.DataBindingUtil;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
+import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.app.ActivityOptionsCompat;
+import android.support.v4.app.SharedElementCallback;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.util.Pair;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.StaggeredGridLayoutManager;
-import android.support.v7.widget.DividerItemDecoration;
-import android.text.Html;
-import android.text.Spanned;
-import android.text.format.DateUtils;
-import android.widget.Toast;
+import android.view.View;
 
 import com.example.xyzreader.R;
-import com.example.xyzreader.data.UpdaterService;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.Map;
 
 import dagger.android.AndroidInjection;
 
-import com.example.xyzreader.data.database.ArticlesDao;
 import com.example.xyzreader.data.model.Article;
 import com.example.xyzreader.databinding.ActivityArticleListBinding;
-import com.example.xyzreader.databinding.ListItemArticleBinding;
-import com.squareup.picasso.Picasso;
-import com.squareup.picasso.Target;
+import com.example.xyzreader.viewmodel.ArticlesListViewModel;
+import com.example.xyzreader.viewmodel.factory.ArticlesListViewModelFactory;
 
 import javax.inject.Inject;
 
@@ -47,14 +40,20 @@ import javax.inject.Inject;
  * activity presents a grid of items as cards.
  */
 public class ArticleListActivity extends AppCompatActivity
-        implements ArticleAdapter.ArticleClickCallback, SwipeRefreshLayout.OnRefreshListener {
+        implements ArticlesListAdapter.ArticleClickCallback, SwipeRefreshLayout.OnRefreshListener {
 
     private ActivityArticleListBinding mBinding;
 
+    /* */
     @Inject
-    ArticlesDao articlesDao;
+    ArticlesListViewModelFactory viewModelFactory;
 
-    ArticleAdapter mAdapter;
+    /* */
+    private ArticlesListViewModel mViewModel;
+
+    ArticlesListAdapter mAdapter;
+    int selectedArticlePosition;
+
     long[] mArticlesIds;
     private boolean mIsRefreshing = false;
 
@@ -62,11 +61,15 @@ public class ArticleListActivity extends AppCompatActivity
     protected void onCreate(Bundle savedInstanceState) {
         AndroidInjection.inject(this);
         super.onCreate(savedInstanceState);
+
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_article_list);
+        mViewModel = ViewModelProviders
+                .of(this, viewModelFactory)
+                .get(ArticlesListViewModel.class);
 
         initToolbar();
 
-        mAdapter = new ArticleAdapter(this);
+        mAdapter = new ArticlesListAdapter(this);
         mAdapter.setHasStableIds(true);
 
         int columnCount = getResources().getInteger(R.integer.list_column_count);
@@ -76,63 +79,117 @@ public class ArticleListActivity extends AppCompatActivity
         mBinding.recyclerView.setAdapter(mAdapter);
 
         mArticlesIds = null;
-        articlesDao.getArticlesAsObservable().observe(this, new Observer<List<Article>>() {
-            @Override
-            public void onChanged(@Nullable List<Article> articles) {
-                if (articles != null) {
-                    mAdapter.setList(new ArrayList<>(articles));
+        mViewModel.getArticles().observe(this, articles -> {
+            if (articles != null) {
+                mAdapter.setList(new ArrayList<>(articles));
 
-                    mArticlesIds = new long[articles.size()];
-                    for (int i=0; i<articles.size(); i++)
-                        mArticlesIds[i] = articles.get(i).getId();
-                }
-                else {
-                    mAdapter.setList(new ArrayList<Article>());
-
-                    mArticlesIds = null;
-                }
-
-                mAdapter.notifyDataSetChanged();
+                mArticlesIds = new long[articles.size()];
+                for (int i=0; i<articles.size(); i++)
+                    mArticlesIds[i] = articles.get(i).getId();
             }
+            else {
+                mAdapter.setList(new ArrayList<>());
+
+                mArticlesIds = null;
+            }
+
+            mAdapter.notifyDataSetChanged();
         });
 
         if (savedInstanceState == null) {
             refresh();
         }
 
-        SharedPreferences sharedPreferences = getSharedPreferences(UpdaterService.TAG, MODE_PRIVATE);
-        sharedPreferences.registerOnSharedPreferenceChangeListener(new SharedPreferences.OnSharedPreferenceChangeListener() {
-            @Override
-            public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-                if (key.equals(UpdaterService.EXTRA_REFRESHING))
-                    mIsRefreshing = sharedPreferences.getBoolean(UpdaterService.EXTRA_REFRESHING, false);
+        mViewModel.isLoading().observe(this, loadingState -> {
+            if (loadingState != null) {
+                mIsRefreshing = loadingState;
                 updateRefreshingUI();
+            }
+        });
+
+        setExitSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                // Locate the ViewHolder for the clicked position.
+                RecyclerView.ViewHolder selectedViewHolder = mBinding.recyclerView
+                        .findViewHolderForAdapterPosition(mViewModel.getCurrentArticlePosition());
+                if (selectedViewHolder == null || selectedViewHolder.itemView == null) {
+                    return;
+                }
+
+                // Map the first shared element name to the child ImageView.
+                sharedElements.put(names.get(0),
+                        selectedViewHolder.itemView.findViewById(R.id.article_image_thumbnail));
+                sharedElements.put(names.get(1),
+                        selectedViewHolder.itemView.findViewById(R.id.article_title));
+                sharedElements.put(names.get(2),
+                        selectedViewHolder.itemView.findViewById(R.id.article_byline));
             }
         });
     }
 
     @Override
-    public void onListItemClick(Article article) {
+    public void onListItemClick(View view, Article article) {
         Intent intent = new Intent(this, ArticleDetailActivity.class);
-        intent.putExtra(ArticleDetailActivity.ARG_ARTICLES_IDS, mArticlesIds);
-        intent.putExtra(ArticleDetailActivity.ARG_ARTICLE_POSITION, mAdapter.getItemPosition(article));
-        intent.putExtra(ArticleDetailActivity.ARG_ARTICLE_ID, article.getId());
 
-        startActivity(intent);
+        selectedArticlePosition = mAdapter.getList().indexOf(article);
+        long id = article.getId();
+        mViewModel.saveCurrentArticlePosition(selectedArticlePosition);
+
+        intent.putExtra(ArticleDetailActivity.ARG_ARTICLE_POSITION, selectedArticlePosition);
+        intent.putExtra(ArticleDetailActivity.ARG_ARTICLE_ID, id);
+
+        // Get the views that the animation will start from
+        View articleImage = view.findViewById(R.id.article_image_thumbnail);
+        View articleTitle = view.findViewById(R.id.article_title);
+        View articleByLine = view.findViewById(R.id.article_byline);
+
+        // Get the transition names from the views
+        String imageTransitionName = ViewCompat.getTransitionName(articleImage);
+        String titleTransitionName = ViewCompat.getTransitionName(articleTitle);
+        String bylineTransitionName = ViewCompat.getTransitionName(articleByLine);
+
+        List<Pair<View, String>> pairs = new ArrayList<>();
+        pairs.add(Pair.create(articleImage, imageTransitionName));
+        pairs.add(Pair.create(articleTitle, titleTransitionName));
+        pairs.add(Pair.create(articleByLine, bylineTransitionName));
+
+        ActivityOptionsCompat options = ActivityOptionsCompat
+                .makeSceneTransitionAnimation(ArticleListActivity.this, pairs.toArray(new Pair[]{}));
+
+        //Start the Intent
+        ActivityCompat.startActivityForResult(this, intent, 1, options.toBundle());
     }
 
 
 
+    @Override
+    public void onActivityReenter(int resultCode, Intent data) {
+        super.onActivityReenter(resultCode, data);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     private void initToolbar() {
+        // Change FAB icon color
+        Drawable myFabSrc = getResources().getDrawable(R.drawable.logo);
+        Drawable willBeWhite = myFabSrc.getConstantState().newDrawable();
+
+        int color = ContextCompat.getColor(ArticleListActivity.this, R.color.theme_primary_dark);
+        willBeWhite.mutate().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
+        mBinding.appLogo.setImageDrawable(willBeWhite);
+
         setSupportActionBar(mBinding.toolbar);
         if (getSupportActionBar() != null) {
-            getSupportActionBar().setHomeButtonEnabled(true);
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
     }
 
     private void refresh() {
-        startService(new Intent(this, UpdaterService.class));
+        mViewModel.refreshArticles();
     }
 
     private void updateRefreshingUI() {
@@ -142,78 +199,5 @@ public class ArticleListActivity extends AppCompatActivity
     @Override
     public void onRefresh() {
         refresh();
-    }
-
-    static class ViewHolder extends RecyclerView.ViewHolder {
-
-        // Use default locale format
-        private SimpleDateFormat outputFormat = new SimpleDateFormat();
-        // Most time functions can only handle 1902 - 2037
-        private GregorianCalendar START_OF_EPOCH = new GregorianCalendar(2,1,1);
-
-        ListItemArticleBinding mBinding;
-
-        ViewHolder(ListItemArticleBinding binding) {
-            super(binding.getRoot());
-
-            this.mBinding = binding;
-        }
-
-        public void bindToData() {
-            Article article = mBinding.getArticle();
-            mBinding.articleTitle.setText(article.getTitle());
-
-            Spanned text;
-            if (!article.getPublishedDate().before(START_OF_EPOCH.getTime())) {
-                text = Html.fromHtml(
-                        DateUtils.getRelativeTimeSpanString(
-                                mBinding.getArticle().getPublishedDate().getTime(),
-                                System.currentTimeMillis(), DateUtils.HOUR_IN_MILLIS,
-                                DateUtils.FORMAT_ABBREV_ALL).toString()
-                                + "<br/>" + " by "
-                                + article.getAuthor());
-
-            } else {
-                text = Html.fromHtml(
-                        outputFormat.format(article.getPublishedDate())
-                                + "<br/>" + " by "
-                                + article.getAuthor());
-            }
-            mBinding.articleSubtitle.setText(text);
-            Picasso.get()
-                    .load(article.getThumbnailUrl())
-                    .into(new Target() {
-                        @Override
-                        public void onBitmapLoaded(Bitmap bitmap, Picasso.LoadedFrom from) {
-                            mBinding.articleImageThumbnail.setImageBitmap(bitmap);
-
-                            Palette.from(bitmap)
-                                    .generate(new Palette.PaletteAsyncListener() {
-                                        @Override
-                                        public void onGenerated(@NonNull Palette palette) {
-                                            Palette.Swatch textSwatch = palette.getDominantSwatch();
-
-                                            if (textSwatch != null) {
-                                                mBinding.articleTitle.setTextColor(textSwatch.getTitleTextColor());
-                                                mBinding.articleSubtitle.setTextColor(textSwatch.getBodyTextColor());
-
-                                                mBinding.textBackground.setBackgroundColor(textSwatch.getRgb());
-                                                mBinding.textBackground.setAlpha(1f);
-                                            }
-                                        }
-                                    });
-                        }
-
-                        @Override
-                        public void onBitmapFailed(Exception e, Drawable errorDrawable) {
-
-                        }
-
-                        @Override
-                        public void onPrepareLoad(Drawable placeHolderDrawable) {
-
-                        }
-                    });
-        }
     }
 }

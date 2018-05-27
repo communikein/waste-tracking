@@ -2,6 +2,7 @@ package com.example.xyzreader.data.model;
 
 import android.arch.persistence.room.ColumnInfo;
 import android.arch.persistence.room.Entity;
+import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.content.ContentValues;
 import android.os.Parcel;
@@ -134,6 +135,30 @@ public class Article implements Parcelable {
 
     public void setPublishedDate(Date publishedDate) {
         this.publishedDate = publishedDate;
+    }
+
+
+    @Ignore
+    @Override
+    public boolean equals(Object obj) {
+        if (! (obj instanceof  Article)) return false;
+
+        Article entry = (Article) obj;
+        return entry.getId() == this.getId();
+    }
+
+    public boolean isIdentic(Object obj) {
+        if (! (obj instanceof Article)) return false;
+
+        Article entry = (Article) obj;
+        return equals(obj) &&
+                entry.getPhotoUrl().equals(this.getPhotoUrl()) &&
+                entry.getTitle().equals(this.getTitle()) &&
+                entry.getAuthor().equals(this.getAuthor()) &&
+                entry.getBody().equals(this.getBody()) &&
+                entry.getThumbnailUrl().equals(this.getThumbnailUrl()) &&
+                entry.getAspectRatio() == this.getAspectRatio() &&
+                entry.getPublishedDate().getTime() == this.getPublishedDate().getTime();
     }
 
 

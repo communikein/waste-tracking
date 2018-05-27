@@ -45,13 +45,13 @@ public interface ArticlesDao {
     LiveData<Article> getArticleAsObservable(long id);
 
 
-    @Query("SELECT * FROM articles")
+    @Query("SELECT * FROM articles ORDER BY id")
     List<Article> getArticles();
 
-    @Query("SELECT * FROM articles")
+    @Query("SELECT * FROM articles ORDER BY id")
     Cursor getArticlesAsCursor();
 
-    @Query("SELECT * FROM articles")
+    @Query("SELECT * FROM articles ORDER BY id")
     LiveData<List<Article>> getArticlesAsObservable();
 
 
