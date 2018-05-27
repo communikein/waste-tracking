@@ -25,5 +25,7 @@
     <color name="ltgray">#ffe0e0e0</color>
 
     <color name="article_title">#FCCC</color>
+    <color name="article_byline">#FCCC</color>
+    <color name="article_shade">@color/theme_accent</color>
     <color name="article_toolbar_background">@color/theme_primary</color>
 </resources>

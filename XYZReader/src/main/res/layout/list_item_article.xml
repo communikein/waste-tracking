@@ -24,8 +24,7 @@
             android:maxHeight="180dp"
             android:adjustViewBounds="true"
             android:scaleType="centerCrop"
-            android:background="@color/photo_placeholder"
-            android:transitionName="@string/transition_article_image"/>
+            android:background="@color/photo_placeholder"/>
 
         <View
             android:id="@+id/text_background"
@@ -46,7 +45,6 @@
             android:textColor="@color/ltgray"
             android:ellipsize="end"
             android:maxLines="4"
-            android:transitionName="@string/transition_article_title"
             app:layout_constraintTop_toBottomOf="@id/article_image_thumbnail"/>
 
         <TextView
@@ -60,7 +58,6 @@
             android:textColor="#6000"
             android:maxLines="2"
             android:ellipsize="end"
-            android:transitionName="@string/transition_article_byline"
             app:layout_constraintTop_toBottomOf="@id/article_title"/>
 
     </android.support.constraint.ConstraintLayout>

@@ -1,10 +1,14 @@
 package com.example.xyzreader.ui;
 
+
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.content.ContextCompat;
+import android.support.v4.view.ViewCompat;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.graphics.Palette;
 import android.support.v7.widget.RecyclerView;
 import android.text.Html;
@@ -26,6 +30,9 @@ import java.util.GregorianCalendar;
 
 public class ArticlesListAdapter extends RecyclerView.Adapter<ArticlesListAdapter.ViewHolder> {
 
+    private String thumbnailTransitionName, shadeTransitionName,
+            titleTransitionName, byLineTransitionName;
+
     @Nullable
     private final ArticleClickCallback mArticleClickCallback;
     public interface ArticleClickCallback {
@@ -34,9 +41,14 @@ public class ArticlesListAdapter extends RecyclerView.Adapter<ArticlesListAdapte
 
     private ArrayList<Article> mData;
 
-    ArticlesListAdapter(@Nullable ArticleClickCallback callback) {
-        this.mArticleClickCallback = callback;
+    ArticlesListAdapter(@NonNull AppCompatActivity callback) {
+        this.mArticleClickCallback = (ArticleClickCallback) callback;
         this.mData = new ArrayList<>();
+
+        thumbnailTransitionName = callback.getString(R.string.transition_article_image);
+        shadeTransitionName = callback.getString(R.string.transition_article_shade);
+        titleTransitionName = callback.getString(R.string.transition_article_title);
+        byLineTransitionName = callback.getString(R.string.transition_article_byline);
     }
 
     public void setList(ArrayList<Article> articles) {
@@ -60,6 +72,11 @@ public class ArticlesListAdapter extends RecyclerView.Adapter<ArticlesListAdapte
                 R.layout.list_item_article, parent, false);
         mBinding.setCallback(mArticleClickCallback);
 
+        ViewCompat.setTransitionName(mBinding.articleImageThumbnail, thumbnailTransitionName);
+        ViewCompat.setTransitionName(mBinding.textBackground, shadeTransitionName);
+        ViewCompat.setTransitionName(mBinding.articleTitle, titleTransitionName);
+        ViewCompat.setTransitionName(mBinding.articleByline, byLineTransitionName);
+
         return new ViewHolder(mBinding);
     }
 
@@ -79,6 +96,8 @@ public class ArticlesListAdapter extends RecyclerView.Adapter<ArticlesListAdapte
 
     static class ViewHolder extends RecyclerView.ViewHolder {
 
+        int titleColor, byLineColor, backgroundColor;
+
         // Use default locale format
         private SimpleDateFormat outputFormat = new SimpleDateFormat();
         // Most time functions can only handle 1902 - 2037
@@ -90,6 +109,13 @@ public class ArticlesListAdapter extends RecyclerView.Adapter<ArticlesListAdapte
             super(binding.getRoot());
 
             this.mBinding = binding;
+
+            titleColor = ContextCompat.getColor(binding.getRoot().getContext(),
+                    R.color.article_title);
+            byLineColor = ContextCompat.getColor(binding.getRoot().getContext(),
+                    R.color.article_byline);
+            backgroundColor = ContextCompat.getColor(binding.getRoot().getContext(),
+                    R.color.article_shade);
         }
 
         void bindToData() {
@@ -125,15 +151,24 @@ public class ArticlesListAdapter extends RecyclerView.Adapter<ArticlesListAdapte
 
                 Palette.from(bitmap)
                         .generate(palette -> {
-                            Palette.Swatch textSwatch = palette.getDominantSwatch();
+                            Palette.Swatch vibrantSwatch = palette.getVibrantSwatch();
+                            Palette.Swatch dominantSwatch = palette.getDominantSwatch();
 
-                            if (textSwatch != null) {
-                                mBinding.articleTitle.setTextColor(textSwatch.getTitleTextColor());
-                                mBinding.articleByline.setTextColor(textSwatch.getBodyTextColor());
-
-                                mBinding.textBackground.setBackgroundColor(textSwatch.getRgb());
-                                mBinding.textBackground.setAlpha(1f);
+                            if (vibrantSwatch != null) {
+                                titleColor = vibrantSwatch.getTitleTextColor();
+                                byLineColor = vibrantSwatch.getBodyTextColor();
+                                backgroundColor = vibrantSwatch.getRgb();
                             }
+                            else if (dominantSwatch != null) {
+                                titleColor = dominantSwatch.getTitleTextColor();
+                                byLineColor = dominantSwatch.getBodyTextColor();
+                                backgroundColor = dominantSwatch.getRgb();
+                            }
+
+                            mBinding.articleTitle.setTextColor(titleColor);
+                            mBinding.articleByline.setTextColor(byLineColor);
+                            mBinding.textBackground.setBackgroundColor(backgroundColor);
+                            mBinding.textBackground.setAlpha(1f);
                         });
             }
 

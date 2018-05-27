@@ -90,7 +90,7 @@ public class ArticleDetailActivity extends AppCompatActivity
         mBinding = DataBindingUtil.setContentView(this, R.layout.activity_article_detail);
 
         parseData();
-        //initTransitions();
+        initTransitions();
 
         mViewModel = ViewModelProviders
                 .of(this, viewModelFactory)
@@ -113,8 +113,9 @@ public class ArticleDetailActivity extends AppCompatActivity
                 // Map the shared elements name to the respective views.
                 View view = mBinding.getRoot();
                 sharedElements.put(names.get(0), view.findViewById(R.id.article_image_thumbnail));
-                sharedElements.put(names.get(1), view.findViewById(R.id.article_title));
-                sharedElements.put(names.get(2), view.findViewById(R.id.article_byline));
+                sharedElements.put(names.get(1), view.findViewById(R.id.image_shade));
+                sharedElements.put(names.get(2), view.findViewById(R.id.article_title));
+                sharedElements.put(names.get(3), view.findViewById(R.id.article_byline));
             }
         });
     }
@@ -122,6 +123,7 @@ public class ArticleDetailActivity extends AppCompatActivity
     private void initUi() {
         initColors();
 
+        ViewCompat.setElevation(mBinding.shareFab, getResources().getDimension(R.dimen.fab_elevation));
         mBinding.shareFab.setOnClickListener(view ->
                 startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(ArticleDetailActivity.this)
                         .setType("text/plain")
@@ -147,12 +149,9 @@ public class ArticleDetailActivity extends AppCompatActivity
     }
 
     private void initTransitions() {
-        ViewCompat.setTransitionName(mBinding.articleImageThumbnail,
-                getString(R.string.transition_article_image) + mSelectedArticleId);
-        ViewCompat.setTransitionName(mBinding.articleTitle,
-                getString(R.string.transition_article_title) + mSelectedArticleId);
-        ViewCompat.setTransitionName(mBinding.articleByline,
-                getString(R.string.transition_article_byline) + mSelectedArticleId);
+        ViewCompat.setTransitionName(mBinding.articleImageThumbnail, getString(R.string.transition_article_image));
+        ViewCompat.setTransitionName(mBinding.articleTitle, getString(R.string.transition_article_title));
+        ViewCompat.setTransitionName(mBinding.articleByline, getString(R.string.transition_article_byline));
     }
 
     private void initPager() {
@@ -204,6 +203,8 @@ public class ArticleDetailActivity extends AppCompatActivity
     }
 
     private void initToolbar() {
+        ViewCompat.setElevation(mBinding.appbar, getResources().getDimension(R.dimen.app_bar_elevation));
+
         //make translucent statusBar on kitkat devices
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);

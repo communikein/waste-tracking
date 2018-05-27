@@ -121,8 +121,10 @@ public class ArticleListActivity extends AppCompatActivity
                 sharedElements.put(names.get(0),
                         selectedViewHolder.itemView.findViewById(R.id.article_image_thumbnail));
                 sharedElements.put(names.get(1),
-                        selectedViewHolder.itemView.findViewById(R.id.article_title));
+                        selectedViewHolder.itemView.findViewById(R.id.text_background));
                 sharedElements.put(names.get(2),
+                        selectedViewHolder.itemView.findViewById(R.id.article_title));
+                sharedElements.put(names.get(3),
                         selectedViewHolder.itemView.findViewById(R.id.article_byline));
             }
         });
@@ -141,16 +143,19 @@ public class ArticleListActivity extends AppCompatActivity
 
         // Get the views that the animation will start from
         View articleImage = view.findViewById(R.id.article_image_thumbnail);
+        View articleShade = view.findViewById(R.id.text_background);
         View articleTitle = view.findViewById(R.id.article_title);
         View articleByLine = view.findViewById(R.id.article_byline);
 
         // Get the transition names from the views
         String imageTransitionName = ViewCompat.getTransitionName(articleImage);
+        String shadeTransitionName = ViewCompat.getTransitionName(articleShade);
         String titleTransitionName = ViewCompat.getTransitionName(articleTitle);
         String bylineTransitionName = ViewCompat.getTransitionName(articleByLine);
 
         List<Pair<View, String>> pairs = new ArrayList<>();
         pairs.add(Pair.create(articleImage, imageTransitionName));
+        pairs.add(Pair.create(articleShade, shadeTransitionName));
         pairs.add(Pair.create(articleTitle, titleTransitionName));
         pairs.add(Pair.create(articleByLine, bylineTransitionName));
 
@@ -158,22 +163,14 @@ public class ArticleListActivity extends AppCompatActivity
                 .makeSceneTransitionAnimation(ArticleListActivity.this, pairs.toArray(new Pair[]{}));
 
         //Start the Intent
-        ActivityCompat.startActivityForResult(this, intent, 1, options.toBundle());
+        ActivityCompat.startActivity(this, intent, options.toBundle());
     }
 
 
-
-    @Override
-    public void onActivityReenter(int resultCode, Intent data) {
-        super.onActivityReenter(resultCode, data);
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-    }
 
     private void initToolbar() {
+        ViewCompat.setElevation(mBinding.appbar, getResources().getDimension(R.dimen.app_bar_elevation));
+
         // Change FAB icon color
         Drawable myFabSrc = getResources().getDrawable(R.drawable.logo);
         Drawable willBeWhite = myFabSrc.getConstantState().newDrawable();
