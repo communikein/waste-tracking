@@ -117,25 +117,16 @@ public class ArticleDetailActivity extends AppCompatActivity
                 mBinding.pager.setCurrentItem(mViewModel.getSelectedArticlePosition());
             }
         });
-
-        setEnterSharedElementCallback(new SharedElementCallback() {
-            @Override
-            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
-                mPagerAdapter.instantiateItem(mBinding.pager, mViewModel.getSelectedArticlePosition());
-
-                // Map the shared elements name to the respective views.
-                View view = mBinding.getRoot();
-                sharedElements.put(names.get(0), view.findViewById(R.id.article_image_thumbnail));
-                sharedElements.put(names.get(1), view.findViewById(R.id.image_shade));
-                sharedElements.put(names.get(2), view.findViewById(R.id.article_title));
-                sharedElements.put(names.get(3), view.findViewById(R.id.article_byline));
-            }
-        });
     }
 
     private void initUi() {
         initColors();
+        initFab();
+        initPager();
+        initToolbar();
+    }
 
+    private void initFab() {
         ViewCompat.setElevation(mBinding.shareFab, getResources().getDimension(R.dimen.fab_elevation));
         mBinding.shareFab.setOnClickListener(view ->
                 startActivity(Intent.createChooser(ShareCompat.IntentBuilder.from(ArticleDetailActivity.this)
@@ -143,9 +134,6 @@ public class ArticleDetailActivity extends AppCompatActivity
                         .setText("Some sample text")
                         .getIntent(), getString(R.string.action_share)))
         );
-
-        initPager();
-        initToolbar();
     }
 
     private void initColors() {
@@ -162,9 +150,26 @@ public class ArticleDetailActivity extends AppCompatActivity
     }
 
     private void initTransitions() {
-        ViewCompat.setTransitionName(mBinding.articleImageThumbnail, getString(R.string.transition_article_image));
-        ViewCompat.setTransitionName(mBinding.articleTitle, getString(R.string.transition_article_title));
-        ViewCompat.setTransitionName(mBinding.articleByline, getString(R.string.transition_article_byline));
+        ViewCompat.setTransitionName(mBinding.articleImageThumbnail,
+                getString(R.string.transition_article_image));
+        ViewCompat.setTransitionName(mBinding.articleTitle,
+                getString(R.string.transition_article_title));
+        ViewCompat.setTransitionName(mBinding.articleByline,
+                getString(R.string.transition_article_byline));
+
+        setEnterSharedElementCallback(new SharedElementCallback() {
+            @Override
+            public void onMapSharedElements(List<String> names, Map<String, View> sharedElements) {
+                mPagerAdapter.instantiateItem(mBinding.pager, mViewModel.getSelectedArticlePosition());
+
+                // Map the shared elements name to the respective views.
+                View view = mBinding.getRoot();
+                sharedElements.put(names.get(0), view.findViewById(R.id.article_image_thumbnail));
+                sharedElements.put(names.get(1), view.findViewById(R.id.image_shade));
+                sharedElements.put(names.get(2), view.findViewById(R.id.article_title));
+                sharedElements.put(names.get(3), view.findViewById(R.id.article_byline));
+            }
+        });
     }
 
     private void initPager() {
@@ -222,16 +227,9 @@ public class ArticleDetailActivity extends AppCompatActivity
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT && Build.VERSION.SDK_INT < Build.VERSION_CODES.LOLLIPOP) {
-            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, true);
-            getWindow().setFlags(WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
-                    WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS);
-        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             getWindow().getDecorView().setSystemUiVisibility(
                     View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN | View.SYSTEM_UI_FLAG_LAYOUT_STABLE);
-            setWindowFlag(this, WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS, false);
-            getWindow().setStatusBarColor(Color.TRANSPARENT);
         }
 
         setSupportActionBar(mBinding.toolbar);
@@ -241,17 +239,6 @@ public class ArticleDetailActivity extends AppCompatActivity
         }
 
         mBinding.appbar.addOnOffsetChangedListener(this);
-    }
-
-    public static void setWindowFlag(Activity activity, final int bits, boolean on) {
-        Window win = activity.getWindow();
-        WindowManager.LayoutParams winParams = win.getAttributes();
-        if (on) {
-            winParams.flags |= bits;
-        } else {
-            winParams.flags &= ~bits;
-        }
-        win.setAttributes(winParams);
     }
 
     private void updateUI(Article article) {
@@ -308,6 +295,7 @@ public class ArticleDetailActivity extends AppCompatActivity
                             fabIconColor = dominantSwatch.getTitleTextColor();
                         }
 
+                        mBinding.articleTitleCollapsed.setTextColor(textColor);
                         mBinding.articleTitle.setTextColor(textColor);
                         mBinding.articleByline.setTextColor(textColor);
 
