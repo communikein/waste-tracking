@@ -12,6 +12,8 @@ import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
+import android.support.design.widget.AppBarLayout;
+import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.app.SharedElementCallback;
@@ -27,6 +29,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 
 import com.example.xyzreader.R;
 
@@ -50,9 +53,12 @@ import dagger.android.support.HasSupportFragmentInjector;
 
 /**
  * An activity representing a single Article detail screen, letting you swipe between articles.
+ *
+ * The title animation has taken inspiration from the
+ * http://saulmm.github.io/mastering-coordinator website
  */
 public class ArticleDetailActivity extends AppCompatActivity
-        implements HasSupportFragmentInjector {
+        implements HasSupportFragmentInjector, AppBarLayout.OnOffsetChangedListener {
 
     @Inject
     DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
@@ -63,6 +69,13 @@ public class ArticleDetailActivity extends AppCompatActivity
 
     /* */
     public ArticleDetailViewModel mViewModel;
+
+    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
+    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS     = 0.3f;
+    private static final int ALPHA_ANIMATIONS_DURATION              = 200;
+
+    private boolean mIsTheTitleVisible          = false;
+    private boolean mIsTheTitleContainerVisible = true;
 
     public static final String ARG_ARTICLE = "article";
     public static final String ARG_ARTICLE_POSITION = "article_position";
@@ -227,13 +240,7 @@ public class ArticleDetailActivity extends AppCompatActivity
             getSupportActionBar().setDisplayShowTitleEnabled(false);
         }
 
-        //mBinding.articleImageThumbnail.setTransitionName();
-
-        mBinding.appbar.addOnOffsetChangedListener((appBarLayout, verticalOffset) -> {
-            int appBarMaxHeight = getResources()
-                    .getDimensionPixelSize(R.dimen.app_bar_expanded_height);
-            int toolbarBackground = (verticalOffset >= appBarMaxHeight) ? fabColor : shadeStartColor;
-        });
+        mBinding.appbar.addOnOffsetChangedListener(this);
     }
 
     public static void setWindowFlag(Activity activity, final int bits, boolean on) {
@@ -248,12 +255,15 @@ public class ArticleDetailActivity extends AppCompatActivity
     }
 
     private void updateUI(Article article) {
+        startAlphaAnimation(mBinding.articleTitleCollapsed, 0, View.INVISIBLE);
+
         Picasso.get()
                 .load(article.getPhotoUrl())
                 .noFade()
                 .into(target);
 
         mBinding.articleTitle.setText(article.getTitle());
+        mBinding.articleTitleCollapsed.setText(article.getTitle());
         mBinding.articleByline.setMovementMethod(new LinkMovementMethod());
         if (!article.getPublishedDate().before(START_OF_EPOCH.getTime())) {
             mBinding.articleByline.setText(Html.fromHtml(
@@ -348,6 +358,60 @@ public class ArticleDetailActivity extends AppCompatActivity
 
         setResult(1);
     }
+
+
+    @Override
+    public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
+        int maxScroll = appBarLayout.getTotalScrollRange();
+        float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
+
+        handleAlphaOnTitle(percentage);
+        handleToolbarTitleVisibility(percentage);
+    }
+
+    private void handleToolbarTitleVisibility(float percentage) {
+        if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
+
+            if(!mIsTheTitleVisible) {
+                startAlphaAnimation(mBinding.articleTitleCollapsed, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                mIsTheTitleVisible = true;
+            }
+
+        } else {
+
+            if (mIsTheTitleVisible) {
+                startAlphaAnimation(mBinding.articleTitleCollapsed, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                mIsTheTitleVisible = false;
+            }
+        }
+    }
+
+    private void handleAlphaOnTitle(float percentage) {
+        if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
+            if(mIsTheTitleContainerVisible) {
+                startAlphaAnimation(mBinding.articleTitleExpanded, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
+                mIsTheTitleContainerVisible = false;
+            }
+
+        } else {
+
+            if (!mIsTheTitleContainerVisible) {
+                startAlphaAnimation(mBinding.articleTitleExpanded, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
+                mIsTheTitleContainerVisible = true;
+            }
+        }
+    }
+
+    public static void startAlphaAnimation (View v, long duration, int visibility) {
+        AlphaAnimation alphaAnimation = (visibility == View.VISIBLE)
+                ? new AlphaAnimation(0f, 1f)
+                : new AlphaAnimation(1f, 0f);
+
+        alphaAnimation.setDuration(duration);
+        alphaAnimation.setFillAfter(true);
+        v.startAnimation(alphaAnimation);
+    }
+
 
     @Override
     public DispatchingAndroidInjector<Fragment> supportFragmentInjector() {
