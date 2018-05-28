@@ -19,15 +19,27 @@ public class FabHideOnScrollBehavior extends FloatingActionButton.Behavior {
     }
 
     @Override
-    public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull FloatingActionButton child, @NonNull View target,
+    public void onNestedScroll(@NonNull CoordinatorLayout coordinatorLayout,
+                               @NonNull FloatingActionButton child, @NonNull View target,
                                int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed, int type) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed, type);
 
         //child -> Floating Action Button
         if (child.getVisibility() == View.VISIBLE && dyConsumed > 0) {
-            child.hide();
+            child.hide(new FloatingActionButton.OnVisibilityChangedListener() {
+                /**
+                 * Called when a FloatingActionButton has been hidden
+                 *
+                 * @param fab the FloatingActionButton that was hidden.
+                 */
+                @Override
+                public void onHidden(FloatingActionButton fab) {
+                    super.onShown(fab);
+                    fab.setVisibility(View.INVISIBLE);
+                }
+            });
         }
-        else if (child.getVisibility() == View.GONE && dyConsumed < 0) {
+        else if (child.getVisibility() == View.GONE && dyUnconsumed == 0) {
             child.show();
         }
     }
@@ -35,6 +47,8 @@ public class FabHideOnScrollBehavior extends FloatingActionButton.Behavior {
     @Override
     public boolean onStartNestedScroll(@NonNull CoordinatorLayout coordinatorLayout, @NonNull FloatingActionButton child,
                                        @NonNull View directTargetChild, @NonNull View target, int axes, int type) {
+        super.onStartNestedScroll(coordinatorLayout, child, directTargetChild, target, axes, type);
+
         return axes == ViewCompat.SCROLL_AXIS_VERTICAL;
     }
 }
