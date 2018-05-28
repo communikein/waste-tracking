@@ -7,6 +7,6 @@ import java.net.URL;
 
 public class Config {
 
-    public static final String BASE_URL = "https://go.udacity.com";
+    public static final String BASE_URL = "https://raw.githubusercontent.com/TNTest/xyzreader/master/";
 
 }

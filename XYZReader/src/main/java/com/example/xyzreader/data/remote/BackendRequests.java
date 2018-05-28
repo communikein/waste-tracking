@@ -10,7 +10,7 @@ import retrofit2.http.GET;
 
 public interface BackendRequests {
 
-    @GET("xyz-reader-json")
+    @GET("data.json")
     Call<ArrayList<Article>> getJSON();
 
 }

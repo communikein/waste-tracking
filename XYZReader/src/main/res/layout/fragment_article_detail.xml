@@ -1,21 +1,43 @@
 <layout
-    xmlns:android="http://schemas.android.com/apk/res/android">
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <android.support.v4.widget.NestedScrollView
-        android:id="@+id/coordinator_view"
+    <android.support.design.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/article_body"
+        <android.support.v4.widget.NestedScrollView
+            android:id="@+id/scroll_view"
             android:layout_width="match_parent"
-            android:maxWidth="@dimen/detail_card_max_width"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/article_body_padding"
-            android:textColor="@android:color/black"
-            android:textColorLink="@color/theme_accent"
-            android:textSize="@dimen/detail_body_text_size"/>
+            android:layout_height="wrap_content">
 
-    </android.support.v4.widget.NestedScrollView>
+            <TextView
+                android:id="@+id/article_body"
+                android:layout_width="match_parent"
+                android:maxWidth="@dimen/detail_card_max_width"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/article_body_padding"
+                android:textColor="@android:color/black"
+                android:textColorLink="@color/theme_secondary"
+                android:textSize="@dimen/detail_body_text_size"/>
+
+        </android.support.v4.widget.NestedScrollView>
+
+        <android.support.design.widget.FloatingActionButton
+            android:id="@+id/share_scroll_fab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="@dimen/fab_bottom_margin"
+            android:layout_marginLeft="@dimen/fab_margin"
+            android:layout_marginRight="@dimen/fab_margin"
+            android:layout_gravity="bottom|end"
+            android:background="@color/theme_secondary"
+            android:contentDescription="@string/action_share"
+            android:src="@drawable/ic_share"
+            android:visibility="gone"
+            app:layout_behavior="com.example.xyzreader.ui.FabHideOnScrollBehavior"
+            app:fabSize="normal" />
+
+    </android.support.design.widget.CoordinatorLayout>
 
 </layout>

@@ -1,19 +1,16 @@
 package com.example.xyzreader.ui;
 
-import android.app.Activity;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.databinding.DataBindingUtil;
 import android.graphics.Bitmap;
-import android.graphics.Color;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.design.widget.AppBarLayout;
-import android.support.design.widget.CoordinatorLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.ShareCompat;
 import android.support.v4.app.SharedElementCallback;
@@ -27,7 +24,6 @@ import android.text.format.DateUtils;
 import android.text.method.LinkMovementMethod;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 
@@ -70,14 +66,13 @@ public class ArticleDetailActivity extends AppCompatActivity
     /* */
     public ArticleDetailViewModel mViewModel;
 
-    private static final float PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR  = 0.9f;
-    private static final float PERCENTAGE_TO_HIDE_TITLE_DETAILS     = 0.3f;
+    private static final float PERCENTAGE_TO_SHOW_COLLAPSED_TITLE   = 0.9f;
+    private static final float PERCENTAGE_TO_HIDE_EXPANDED_TITLE    = 0.3f;
     private static final int ALPHA_ANIMATIONS_DURATION              = 200;
 
-    private boolean mIsTheTitleVisible          = false;
-    private boolean mIsTheTitleContainerVisible = true;
+    private boolean mIsCollapsedTitleVisible            = true;
+    private boolean mIsExpandedTitleVisible             = true;
 
-    public static final String ARG_ARTICLE = "article";
     public static final String ARG_ARTICLE_POSITION = "article_position";
     public static final String ARG_ARTICLE_ID = "article_id";
 
@@ -140,11 +135,11 @@ public class ArticleDetailActivity extends AppCompatActivity
         textColor = ContextCompat.getColor(ArticleDetailActivity.this,
                 R.color.article_title);
         shadeColorEnd = ContextCompat.getColor(ArticleDetailActivity.this,
-                R.color.theme_accent_semi_transparent);
+                R.color.theme_secondary_semi_transparent);
         shadeStartColor = ContextCompat.getColor(ArticleDetailActivity.this,
                 android.R.color.transparent);
         fabColor = ContextCompat.getColor(ArticleDetailActivity.this,
-                R.color.theme_accent);
+                R.color.theme_secondary);
         fabIconColor = ContextCompat.getColor(ArticleDetailActivity.this,
                 R.color.article_title);
     }
@@ -242,8 +237,6 @@ public class ArticleDetailActivity extends AppCompatActivity
     }
 
     private void updateUI(Article article) {
-        startAlphaAnimation(mBinding.articleTitleCollapsed, 0, View.INVISIBLE);
-
         Picasso.get()
                 .load(article.getPhotoUrl())
                 .noFade()
@@ -351,41 +344,36 @@ public class ArticleDetailActivity extends AppCompatActivity
     @Override
     public void onOffsetChanged(AppBarLayout appBarLayout, int verticalOffset) {
         int maxScroll = appBarLayout.getTotalScrollRange();
-        float percentage = (float) Math.abs(verticalOffset) / (float) maxScroll;
+        float percentage = 1 - (float) Math.abs(verticalOffset) / (float) maxScroll;
 
-        handleAlphaOnTitle(percentage);
-        handleToolbarTitleVisibility(percentage);
+        handleAlphaOnExpandedTitle(percentage);
+        handleAlphaOnCollapsedTitle(percentage);
     }
 
-    private void handleToolbarTitleVisibility(float percentage) {
-        if (percentage >= PERCENTAGE_TO_SHOW_TITLE_AT_TOOLBAR) {
-
-            if(!mIsTheTitleVisible) {
+    private void handleAlphaOnCollapsedTitle(float percentage) {
+        if (percentage <= PERCENTAGE_TO_SHOW_COLLAPSED_TITLE) {
+            if(!mIsCollapsedTitleVisible) {
                 startAlphaAnimation(mBinding.articleTitleCollapsed, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
-                mIsTheTitleVisible = true;
+                mIsCollapsedTitleVisible = true;
             }
-
         } else {
-
-            if (mIsTheTitleVisible) {
+            if (mIsCollapsedTitleVisible) {
                 startAlphaAnimation(mBinding.articleTitleCollapsed, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
-                mIsTheTitleVisible = false;
+                mIsCollapsedTitleVisible = false;
             }
         }
     }
 
-    private void handleAlphaOnTitle(float percentage) {
-        if (percentage >= PERCENTAGE_TO_HIDE_TITLE_DETAILS) {
-            if(mIsTheTitleContainerVisible) {
+    private void handleAlphaOnExpandedTitle(float percentage) {
+        if (percentage <= PERCENTAGE_TO_HIDE_EXPANDED_TITLE) {
+            if(mIsExpandedTitleVisible) {
                 startAlphaAnimation(mBinding.articleTitleExpanded, ALPHA_ANIMATIONS_DURATION, View.INVISIBLE);
-                mIsTheTitleContainerVisible = false;
+                mIsExpandedTitleVisible = false;
             }
-
         } else {
-
-            if (!mIsTheTitleContainerVisible) {
+            if (!mIsExpandedTitleVisible) {
                 startAlphaAnimation(mBinding.articleTitleExpanded, ALPHA_ANIMATIONS_DURATION, View.VISIBLE);
-                mIsTheTitleContainerVisible = true;
+                mIsExpandedTitleVisible = true;
             }
         }
     }

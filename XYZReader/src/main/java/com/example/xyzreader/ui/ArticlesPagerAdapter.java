@@ -26,7 +26,7 @@ class ArticlesPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return ArticleDetailFragment.newInstance(mArticles.get(position));
+        return ArticleDetailFragment.newInstance();
     }
 
     @Override

@@ -2,12 +2,12 @@ package com.example.xyzreader.ui;
 
 import android.content.Context;
 import android.databinding.DataBindingUtil;
-import android.graphics.Typeface;
 
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.widget.NestedScrollView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,17 +22,12 @@ import javax.inject.Inject;
 
 import dagger.android.support.AndroidSupportInjection;
 
-import static com.example.xyzreader.ui.ArticleDetailActivity.ARG_ARTICLE;
-import static com.example.xyzreader.ui.ArticleDetailActivity.ARG_ARTICLE_ID;
-
 /**
  * A fragment representing a single Article detail screen. This fragment is
  * either contained in a {@link ArticleListActivity} in two-pane mode (on
  * tablets) or a {@link ArticleDetailActivity} on handsets.
  */
 public class ArticleDetailFragment extends Fragment {
-
-    private Article mArticle;
 
     @Inject
     ArticlesDao articlesDao;
@@ -46,16 +41,17 @@ public class ArticleDetailFragment extends Fragment {
     public ArticleDetailFragment() {
     }
 
-    public static ArticleDetailFragment newInstance(Article article) {
-        Bundle arguments = new Bundle();
-        //arguments.putParcelable(ARG_ARTICLE, article);
-        ArticleDetailFragment fragment = new ArticleDetailFragment();
-        fragment.setArguments(arguments);
-        return fragment;
+    public static ArticleDetailFragment newInstance() {
+        return new ArticleDetailFragment();
+    }
+
+    @NonNull
+    private ArticleDetailActivity getParentActivity() {
+        return (ArticleDetailActivity) getActivity();
     }
 
     private ArticleDetailViewModel getViewModel() {
-        return ((ArticleDetailActivity) getActivity()).mViewModel;
+        return getParentActivity().mViewModel;
     }
 
     @Override
@@ -69,24 +65,6 @@ public class ArticleDetailFragment extends Fragment {
         super.onCreate(savedInstanceState);
 
         setHasOptionsMenu(true);
-    }
-
-    private void parseData(Bundle data) {
-        long articleId = data.getLong(ARG_ARTICLE_ID, -1);
-
-        if (data.containsKey(ARG_ARTICLE)) {
-            mArticle = data.getParcelable(ARG_ARTICLE);
-        }
-        else {
-            articlesDao.getArticleAsObservable(articleId).observe(this, article -> {
-                mArticle = article;
-                bindViews();
-            });
-        }
-    }
-
-    public Article getArticle() {
-        return mArticle;
     }
 
     @Override
@@ -107,10 +85,6 @@ public class ArticleDetailFragment extends Fragment {
 
     private void bindViews() {
         Article selected = getViewModel().getSelectedArticle();
-        /*
-        mBinding.articleBody.setTypeface(
-                Typeface.createFromAsset(getResources().getAssets(), "Rosario-Regular.ttf"));
-        */
 
         if (selected != null) {
             mBinding.getRoot().setAlpha(0);

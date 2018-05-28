@@ -20,4 +20,7 @@
     <dimen name="text_margin">16dp</dimen>
     <dimen name="detail_title_collapsed_text_size">20sp</dimen>
 
+    <dimen name="article_card_margin">4dp</dimen>
+    <dimen name="article_card_padding">4dp</dimen>
+
 </resources>
