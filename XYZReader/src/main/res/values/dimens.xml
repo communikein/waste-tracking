@@ -22,5 +22,6 @@
 
     <dimen name="article_card_margin">4dp</dimen>
     <dimen name="article_card_padding">4dp</dimen>
+    <dimen name="article_body_card_margin">8dp</dimen>
 
 </resources>

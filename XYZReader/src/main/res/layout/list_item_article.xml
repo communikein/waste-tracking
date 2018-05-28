@@ -13,6 +13,7 @@
         android:layout_height="wrap_content"
         android:padding="@dimen/article_card_padding"
         android:layout_margin="@dimen/article_card_margin"
+        android:clipToPadding="true"
         android:onClick="@{(view) ->  callback.onListItemClick(view, article)}"
         android:clickable="true"
         android:focusable="true">
