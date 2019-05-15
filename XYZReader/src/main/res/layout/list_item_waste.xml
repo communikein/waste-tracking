@@ -1,0 +1,83 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable name="waste"
+            type="com.example.xyzreader.data.model.Waste"/>
+        <variable name="callback"
+            type="com.example.xyzreader.ui.WasteListAdapter.WasteClickCallback"/>
+        <variable name="score"
+            type="Float"/>
+    </data>
+
+    <android.support.v7.widget.CardView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/article_card_padding"
+        android:layout_margin="@dimen/article_card_margin"
+        android:clipToPadding="true"
+        android:onClick="@{(view) ->  callback.onListItemClick(view, waste, score)}"
+        android:clickable="true"
+        android:focusable="true">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="8dp">
+
+            <TextView
+                android:id="@+id/waste_type"
+                style="@style/TextAppearance.AppCompat.Large"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:paddingBottom="4dp"
+                android:textColor="@android:color/black"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:text="Frazione Umida"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toStartOf="@id/waste_quantity"/>
+
+            <ImageView
+                android:id="@+id/user_score_thumbnail"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                tools:background="@drawable/ic_face_sad"
+                app:layout_constraintTop_toBottomOf="@id/waste_type"
+                app:layout_constraintStart_toStartOf="parent"/>
+
+            <TextView
+                android:id="@+id/waste_details"
+                style="@style/TextAppearance.AppCompat.Subhead"
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_margin="8dp"
+                android:ellipsize="end"
+                android:maxLines="4"
+                android:textColor="@color/ltgray"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/waste_quantity"
+                app:layout_constraintStart_toEndOf="@id/user_score_thumbnail"
+                app:layout_constraintTop_toBottomOf="@id/waste_type" />
+
+            <TextView
+                android:id="@+id/waste_quantity"
+                android:layout_width="80dp"
+                android:layout_height="0dp"
+                android:gravity="center"
+                android:text="10Kg"
+                android:textColor="@android:color/black"
+                android:textSize="22sp"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.CardView>
+
+</layout>

@@ -1,7 +1,8 @@
 package com.example.xyzreader.di.module;
 
-import com.example.xyzreader.ui.ArticleDetailActivity;
-import com.example.xyzreader.ui.ArticleListActivity;
+import com.example.xyzreader.ui.UserDetailsActivity;
+import com.example.xyzreader.ui.WasteDetailsActivity;
+import com.example.xyzreader.ui.WasteListActivity;
 
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
@@ -9,10 +10,13 @@ import dagger.android.ContributesAndroidInjector;
 @Module
 public abstract class ActivitiesModule {
 
-    @ContributesAndroidInjector(modules = FragmentsBuilderModule.class)
-    abstract ArticleDetailActivity contributeArticleDetailActivity();
+    @ContributesAndroidInjector()
+    abstract WasteDetailsActivity contributeWasteDetailActivity();
 
     @ContributesAndroidInjector
-    abstract ArticleListActivity contributeArticleListActivity();
+    abstract WasteListActivity contributeWasteListActivity();
+
+    @ContributesAndroidInjector
+    abstract UserDetailsActivity contributeUserDetailsActivity();
 
 }

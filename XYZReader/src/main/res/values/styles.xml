@@ -25,10 +25,4 @@
         <item name="colorAccent">@color/theme_secondary</item>
     </style>
 
-    <style name="Theme.Bacon.Detail" parent="Theme.Bacon">
-        <item name="android:windowNoTitle">true</item>
-
-        <item name="android:windowTranslucentStatus">true</item>
-    </style>
-
 </resources>
