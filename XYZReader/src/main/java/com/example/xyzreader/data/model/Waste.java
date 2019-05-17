@@ -5,11 +5,13 @@ import android.arch.persistence.room.Entity;
 import android.arch.persistence.room.Ignore;
 import android.arch.persistence.room.PrimaryKey;
 import android.content.ContentValues;
+import android.content.Context;
 import android.os.Parcel;
 import android.os.Parcelable;
 import android.support.annotation.NonNull;
 
-import com.example.xyzreader.data.contentprovider.WasteContract;
+import com.example.xyzreader.R;
+import com.example.xyzreader.data.contentprovider.BlockChainContract;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
@@ -18,49 +20,55 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_ID;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_LANDFILL_AIR_PARAMETERS;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_LANDFILL_GAS_PRODUCTION;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_LANDFILL_WATER_PARAMETERS;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_PARAMETERS;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_POWER_ENERGY_PRODUCTION;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_POWER_HEATING_LEVELS;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_QUALITY;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_RECYCLE_PROCESSING_WASTE;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_RECYCLE_RECYCLED_QUANTITY;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_TREATMENT_TYPE;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_TYPE;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_VOLUME;
-import static com.example.xyzreader.data.contentprovider.WasteContract.WasteEntry.COLUMN_WEIGHT;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_WASTE_ID;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_LANDFILL_AIR_PARAMETERS;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_LANDFILL_GAS_PRODUCTION;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_LANDFILL_WATER_PARAMETERS;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_WASTE_PARAMETERS;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_POWER_ENERGY_PRODUCTION;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_POWER_HEATING_LEVELS;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_WASTE_QUALITY;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_RECYCLE_PROCESSING_WASTE;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_RECYCLE_RECYCLED_QUANTITY;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_TREATMENT_TYPE;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_WASTE_TYPE;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_WASTE_VOLUME;
+import static com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_WASTE_WEIGHT;
 
 
-@Entity(tableName = WasteContract.WasteEntry.TABLE_NAME)
-public class Waste implements Parcelable {
+@Entity(tableName = BlockChainContract.BlockEntry.TABLE_NAME)
+public class Waste extends Block implements Parcelable {
 
-    @SerializedName(COLUMN_ID)
+    public static final String WASTE_TYPE_PLASTIC = "plastic";
+    public static final String WASTE_TYPE_METAL = "metal";
+    public static final String WASTE_TYPE_GLASS = "glass";
+    public static final String WASTE_TYPE_PAPER = "paper";
+    public static final String WASTE_TYPE_ORGANIC = "organic";
+
+    @SerializedName(COLUMN_WASTE_ID)
     @PrimaryKey
-    @ColumnInfo(index = true, name = COLUMN_ID)
+    @ColumnInfo(index = true, name = COLUMN_WASTE_ID)
     @NonNull
     private String id;
 
-    @SerializedName(COLUMN_TYPE)
-    @ColumnInfo(name = COLUMN_TYPE)
+    @SerializedName(COLUMN_WASTE_TYPE)
+    @ColumnInfo(name = COLUMN_WASTE_TYPE)
     private String type;
 
-    @SerializedName(COLUMN_WEIGHT)
-    @ColumnInfo(name = COLUMN_WEIGHT)
+    @SerializedName(COLUMN_WASTE_WEIGHT)
+    @ColumnInfo(name = COLUMN_WASTE_WEIGHT)
     private double weight;
 
-    @SerializedName(COLUMN_VOLUME)
-    @ColumnInfo(name = COLUMN_VOLUME)
+    @SerializedName(COLUMN_WASTE_VOLUME)
+    @ColumnInfo(name = COLUMN_WASTE_VOLUME)
     private double volume;
 
-    @SerializedName(COLUMN_QUALITY)
-    @ColumnInfo(name = COLUMN_QUALITY)
+    @SerializedName(COLUMN_WASTE_QUALITY)
+    @ColumnInfo(name = COLUMN_WASTE_QUALITY)
     private String quality;
 
-    @SerializedName(COLUMN_PARAMETERS)
-    @ColumnInfo(name = COLUMN_PARAMETERS)
+    @SerializedName(COLUMN_WASTE_PARAMETERS)
+    @ColumnInfo(name = COLUMN_WASTE_PARAMETERS)
     private String parameters;
 
 
@@ -100,22 +108,28 @@ public class Waste implements Parcelable {
 
 
     public Waste(String id, String type, double weight, double volume, String quality, String parameters) {
+        super(null);
+
         setId(id);
         setType(type);
         setWeight(weight);
         setVolume(volume);
         setQuality(quality);
         setParameters(parameters);
+
+        super.setJson(this.toJSON());
     }
 
     public Waste(JSONObject origin) {
+        super(origin);
+
         try {
-            String id = origin.getString(COLUMN_ID);
-            String type = origin.getString(COLUMN_TYPE);
-            double weight = origin.getDouble(COLUMN_WEIGHT);
-            double volume = origin.getDouble(COLUMN_VOLUME);
-            String quality = origin.getString(COLUMN_QUALITY);
-            String parameters = origin.getString(COLUMN_PARAMETERS);
+            String id = origin.getString(COLUMN_WASTE_ID);
+            String type = origin.getString(COLUMN_WASTE_TYPE);
+            double weight = origin.getDouble(COLUMN_WASTE_WEIGHT);
+            double volume = origin.getDouble(COLUMN_WASTE_VOLUME);
+            String quality = origin.getString(COLUMN_WASTE_QUALITY);
+            String parameters = origin.getString(COLUMN_WASTE_PARAMETERS);
 
             String treatment_type = origin.getString(COLUMN_TREATMENT_TYPE);
             double recycled_quantity = origin.getDouble(COLUMN_RECYCLE_RECYCLED_QUANTITY);
@@ -161,6 +175,21 @@ public class Waste implements Parcelable {
 
     public String getType() {
         return type;
+    }
+
+    public String printType(Context context) {
+        switch (getType()) {
+            case WASTE_TYPE_PAPER:
+                return context.getString(R.string.waste_type_paper);
+            case WASTE_TYPE_GLASS:
+                return context.getString(R.string.waste_type_glass);
+            case WASTE_TYPE_METAL:
+                return context.getString(R.string.waste_type_metal);
+            case WASTE_TYPE_PLASTIC:
+                return context.getString(R.string.waste_type_plastic);
+            default:
+                return context.getString(R.string.waste_type_organic);
+        }
     }
 
     public void setType(String type) {
@@ -315,12 +344,12 @@ public class Waste implements Parcelable {
     }
 
     public static Waste fromContentValues(ContentValues origin) {
-        String id = origin.getAsString(COLUMN_ID);
-        String type = origin.getAsString(COLUMN_TYPE);
-        double weight = origin.getAsDouble(COLUMN_WEIGHT);
-        double volume = origin.getAsDouble(COLUMN_VOLUME);
-        String quality = origin.getAsString(COLUMN_QUALITY);
-        String parameters = origin.getAsString(COLUMN_PARAMETERS);
+        String id = origin.getAsString(COLUMN_WASTE_ID);
+        String type = origin.getAsString(COLUMN_WASTE_TYPE);
+        double weight = origin.getAsDouble(COLUMN_WASTE_WEIGHT);
+        double volume = origin.getAsDouble(COLUMN_WASTE_VOLUME);
+        String quality = origin.getAsString(COLUMN_WASTE_QUALITY);
+        String parameters = origin.getAsString(COLUMN_WASTE_PARAMETERS);
 
         String treatment_type = origin.getAsString(COLUMN_TREATMENT_TYPE);
         double recycled_quantity = origin.getAsDouble(COLUMN_RECYCLE_RECYCLED_QUANTITY);
@@ -354,7 +383,7 @@ public class Waste implements Parcelable {
         if (array != null) for (int i=0; i<array.length(); i++) {
             Waste waste = null;
             try {
-                if (array.getJSONObject(i).has(COLUMN_ID))
+                if (array.getJSONObject(i).has(COLUMN_WASTE_ID))
                     waste = new Waste(array.getJSONObject(i));
             } catch (JSONException e) {
                 e.printStackTrace();
@@ -366,16 +395,44 @@ public class Waste implements Parcelable {
         return result;
     }
 
+    public JSONObject toJSON() {
+        JSONObject dest = new JSONObject();
+
+        try {
+            dest.put(COLUMN_WASTE_ID, getId());
+            dest.put(COLUMN_WASTE_TYPE, getType());
+            dest.put(COLUMN_WASTE_WEIGHT, getWeight());
+            dest.put(COLUMN_WASTE_VOLUME, getVolume());
+            dest.put(COLUMN_WASTE_QUALITY, getQuality());
+            dest.put(COLUMN_WASTE_PARAMETERS, getParameters());
+
+            dest.put(COLUMN_TREATMENT_TYPE, getTreatmentType());
+            dest.put(COLUMN_RECYCLE_RECYCLED_QUANTITY, getRecycledQuantity());
+            dest.put(COLUMN_RECYCLE_PROCESSING_WASTE, getRecycleProcessingWaste());
+
+            dest.put(COLUMN_POWER_ENERGY_PRODUCTION, getPowerEnergyProduction());
+            dest.put(COLUMN_POWER_HEATING_LEVELS, getPowerHeatingLevels());
+
+            dest.put(COLUMN_LANDFILL_WATER_PARAMETERS, getLandfillWaterParameters());
+            dest.put(COLUMN_LANDFILL_AIR_PARAMETERS, getLandfillAirParameters());
+            dest.put(COLUMN_LANDFILL_GAS_PRODUCTION, getLandfillGasProduction());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return dest;
+    }
+
 
     public static ContentValues writeToContentValues(Waste waste) {
         ContentValues contentValues = new ContentValues();
 
-        contentValues.put(COLUMN_ID, waste.getId());
-        contentValues.put(COLUMN_TYPE, waste.getType());
-        contentValues.put(COLUMN_WEIGHT, waste.getWeight());
-        contentValues.put(COLUMN_VOLUME, waste.getVolume());
-        contentValues.put(COLUMN_QUALITY, waste.getQuality());
-        contentValues.put(COLUMN_PARAMETERS, waste.getParameters());
+        contentValues.put(COLUMN_WASTE_ID, waste.getId());
+        contentValues.put(COLUMN_WASTE_TYPE, waste.getType());
+        contentValues.put(COLUMN_WASTE_WEIGHT, waste.getWeight());
+        contentValues.put(COLUMN_WASTE_VOLUME, waste.getVolume());
+        contentValues.put(COLUMN_WASTE_QUALITY, waste.getQuality());
+        contentValues.put(COLUMN_WASTE_PARAMETERS, waste.getParameters());
 
         contentValues.put(COLUMN_TREATMENT_TYPE, waste.getTreatmentType());
         contentValues.put(COLUMN_RECYCLE_RECYCLED_QUANTITY, waste.getRecycledQuantity());

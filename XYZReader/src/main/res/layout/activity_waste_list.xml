@@ -50,12 +50,12 @@
                 android:gravity="center"
                 android:textSize="30sp"
                 app:layout_constraintStart_toEndOf="@id/highscore"
-                app:layout_constraintEnd_toStartOf="@id/user"
+                app:layout_constraintEnd_toStartOf="@id/producer"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintBottom_toBottomOf="parent"/>
 
             <ImageView
-                android:id="@+id/user"
+                android:id="@+id/producer"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:background="@drawable/ic_person_black"

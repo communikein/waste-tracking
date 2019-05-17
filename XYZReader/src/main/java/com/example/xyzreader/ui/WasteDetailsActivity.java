@@ -16,6 +16,7 @@ import com.example.xyzreader.R;
 
 import com.example.xyzreader.data.BlockChainRepository;
 import com.example.xyzreader.data.FakeDataHelper;
+import com.example.xyzreader.data.model.Producer;
 import com.example.xyzreader.data.model.Waste;
 import com.example.xyzreader.databinding.ActivityWasteDetailBinding;
 import com.example.xyzreader.viewmodel.WasteDetailViewModel;
@@ -137,10 +138,13 @@ public class WasteDetailsActivity extends AppCompatActivity
         else
             mBinding.userMessage.setText(R.string.user_message_happy);
 
-        if (mSelectedWaste == null)
-            mBinding.scoreTopic.setText("Utente");
+        if (mSelectedWaste == null) {
+            Producer producer = new Producer("ASZ-123", "Elia Maracani", 0.5, "Verdello, Italia", 4);
+
+            mBinding.scoreTopic.setText(producer.getName());
+        }
         else
-            mBinding.scoreTopic.setText(mSelectedWaste.getType());
+            mBinding.scoreTopic.setText(mSelectedWaste.printType(this));
     }
 
     @Override

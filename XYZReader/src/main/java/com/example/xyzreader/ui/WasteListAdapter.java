@@ -4,7 +4,6 @@ package com.example.xyzreader.ui;
 import android.databinding.DataBindingUtil;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.RecyclerView;
@@ -14,13 +13,10 @@ import android.view.ViewGroup;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.FakeDataHelper;
-import com.example.xyzreader.data.model.User;
 import com.example.xyzreader.data.model.Waste;
 import com.example.xyzreader.databinding.ListItemWasteBinding;
 
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.GregorianCalendar;
 
 public class WasteListAdapter extends RecyclerView.Adapter<WasteListAdapter.ViewHolder> {
 
@@ -81,6 +77,11 @@ public class WasteListAdapter extends RecyclerView.Adapter<WasteListAdapter.View
     }
 
     @Override
+    public long getItemId(int position) {
+        return (long) position;
+    }
+
+    @Override
     public int getItemCount() {
         return mData.size();
     }
@@ -100,7 +101,7 @@ public class WasteListAdapter extends RecyclerView.Adapter<WasteListAdapter.View
             int feelingResource = FakeDataHelper.pickFeelingResource(mBinding.getScore());
 
             Waste waste = mBinding.getWaste();
-            mBinding.wasteType.setText(waste.getType());
+            mBinding.wasteType.setText(waste.printType(mBinding.getRoot().getContext()));
             mBinding.wasteDetails.setText(waste.getParameters());
             mBinding.wasteQuantity.setText(String.valueOf(waste.getWeight()));
             mBinding.userScoreThumbnail.setImageResource(feelingResource);

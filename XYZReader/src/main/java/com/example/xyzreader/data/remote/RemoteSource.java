@@ -3,17 +3,14 @@ package com.example.xyzreader.data.remote;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
-import android.util.Log;
 
 import com.example.xyzreader.AppExecutors;
 import com.example.xyzreader.R;
+import com.example.xyzreader.data.model.Block;
 import com.example.xyzreader.data.model.Waste;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.json.JSONArray;
 import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -29,10 +26,6 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import retrofit2.Response;
-import retrofit2.Retrofit;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 @Singleton
 public class RemoteSource {
 
@@ -43,6 +36,7 @@ public class RemoteSource {
     private final MutableLiveData<List<Waste>> mDownloadedWaste;
     private final MutableLiveData<Boolean> mLoadingState;
 
+    private final MutableLiveData<List<Block>> mDownloadedBlocks;
 
     @Inject
     public RemoteSource(AppExecutors executors) {
@@ -50,12 +44,16 @@ public class RemoteSource {
 
         mDownloadedWaste = new MutableLiveData<>();
         mLoadingState = new MutableLiveData<>();
+
+        mDownloadedBlocks = new MutableLiveData<>();
     }
 
 
     public LiveData<List<Waste>> getWasteFromBlockChain() {
         return mDownloadedWaste;
     }
+
+    public LiveData<List<Block>> getBlockChain() { return mDownloadedBlocks; }
 
     public LiveData<Boolean> getLoadingState() {
         return mLoadingState;
@@ -70,6 +68,12 @@ public class RemoteSource {
         mDownloadedWaste.postValue(wastes);
 
         mLoadingState.postValue(false);
+    }
+
+    public void fetchBlockChain(Context context) {
+        JSONArray origin = getJSON(context);
+        ArrayList<Block> blockChain = Block.fromJSONArray(origin, Block.class);
+        mDownloadedBlocks.postValue(blockChain);
     }
 
     JSONArray getJSON(Context context) {
@@ -94,3 +98,4 @@ public class RemoteSource {
 
 
 }
+

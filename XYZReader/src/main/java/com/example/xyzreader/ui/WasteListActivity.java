@@ -10,6 +10,8 @@ import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 
 import com.example.xyzreader.R;
@@ -66,7 +68,6 @@ public class WasteListActivity extends AppCompatActivity
         mAdapter = new WasteListAdapter(this);
         mAdapter.setHasStableIds(true);
 
-        //int columnCount = getResources().getInteger(R.integer.list_column_count);
         LinearLayoutManager layoutManager = new LinearLayoutManager(this);
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mBinding.recyclerView.setLayoutManager(layoutManager);
@@ -110,7 +111,7 @@ public class WasteListActivity extends AppCompatActivity
             onListItemClick(v, null, score);
         });
 
-        mBinding.user.setOnClickListener(v -> {
+        mBinding.producer.setOnClickListener(v -> {
             Intent intent = new Intent(this, UserDetailsActivity.class);
             ActivityCompat.startActivity(this, intent, null);
         });
@@ -127,7 +128,27 @@ public class WasteListActivity extends AppCompatActivity
         ActivityCompat.startActivity(this, intent, null);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
 
+        if (id == R.id.developer) {
+            Intent intent = new Intent(this, BlockChainListActivity.class);
+            ActivityCompat.startActivity(this, intent, null);
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
+    }
+
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main, menu);
+        return true;
+    }
 
     private void initToolbar() {
         ViewCompat.setElevation(mBinding.appbar, getResources().getDimension(R.dimen.app_bar_elevation));

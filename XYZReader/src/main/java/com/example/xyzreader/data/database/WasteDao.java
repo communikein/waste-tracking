@@ -28,34 +28,34 @@ public interface WasteDao {
     int updateWaste(Waste article);
 
 
-    @Query("DELETE FROM waste WHERE waste_id = :id")
+    @Query("DELETE FROM blockchain WHERE waste_id = :id")
     int deleteWaste(String id);
 
-    @Query("DELETE FROM waste")
+    @Query("DELETE FROM blockchain")
     int deleteWastes();
 
 
-    @Query("SELECT * FROM waste WHERE waste_id = :id")
+    @Query("SELECT * FROM blockchain WHERE waste_id = :id")
     Waste getWaste(String id);
 
-    @Query("SELECT * FROM waste WHERE waste_id = :id")
+    @Query("SELECT * FROM blockchain WHERE waste_id = :id")
     Cursor getWasteAsCursor(String id);
 
-    @Query("SELECT * FROM waste WHERE waste_id = :id")
+    @Query("SELECT * FROM blockchain WHERE waste_id = :id")
     LiveData<Waste> getWasteAsObservable(long id);
 
 
-    @Query("SELECT * FROM waste ORDER BY waste_id")
+    @Query("SELECT * FROM blockchain ORDER BY waste_id")
     List<Waste> getWastes();
 
-    @Query("SELECT * FROM waste ORDER BY waste_id")
+    @Query("SELECT * FROM blockchain ORDER BY waste_id")
     Cursor getWastesAsCursor();
 
-    @Query("SELECT * FROM waste ORDER BY waste_id")
+    @Query("SELECT * FROM blockchain ORDER BY waste_id")
     LiveData<List<Waste>> getWastesAsObservable();
 
 
-    @Query("SELECT COUNT(*) FROM waste")
+    @Query("SELECT COUNT(*) FROM blockchain")
     int getWastesCount();
 
 }

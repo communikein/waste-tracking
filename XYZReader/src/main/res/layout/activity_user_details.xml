@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
-        <variable name="user"
-            type="com.example.xyzreader.data.model.User"/>
+        <variable name="producer"
+            type="com.example.xyzreader.data.model.Producer"/>
     </data>
 
     <android.support.v7.widget.LinearLayoutCompat

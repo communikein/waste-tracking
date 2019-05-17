@@ -1,10 +1,11 @@
 package com.example.xyzreader.ui;
 
+import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
-import android.content.Intent;
 import android.databinding.DataBindingUtil;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewCompat;
@@ -13,15 +14,10 @@ import android.os.Bundle;
 import android.view.MenuItem;
 
 import com.example.xyzreader.R;
-import com.example.xyzreader.data.FakeDataHelper;
-import com.example.xyzreader.data.model.User;
-import com.example.xyzreader.data.model.Waste;
+import com.example.xyzreader.data.model.Producer;
 import com.example.xyzreader.databinding.ActivityUserDetailsBinding;
-import com.example.xyzreader.databinding.ActivityWasteDetailBinding;
 import com.example.xyzreader.viewmodel.UserDetailViewModel;
-import com.example.xyzreader.viewmodel.WasteDetailViewModel;
 import com.example.xyzreader.viewmodel.factory.UserDetailViewModelFactory;
-import com.example.xyzreader.viewmodel.factory.WasteDetailViewModelFactory;
 
 import javax.inject.Inject;
 
@@ -45,7 +41,7 @@ public class UserDetailsActivity  extends AppCompatActivity
 
     public static final String ARG_USER = "user";
 
-    User mUser;
+    Producer mProducer;
 
     private ActivityUserDetailsBinding mBinding;
 
@@ -63,7 +59,8 @@ public class UserDetailsActivity  extends AppCompatActivity
                 .get(UserDetailViewModel.class);
 
         initUi();
-        updateUI();
+
+        mViewModel.getUser().observe(this, this::updateUI);
     }
 
 
@@ -92,7 +89,12 @@ public class UserDetailsActivity  extends AppCompatActivity
         }
     }
 
-    private void updateUI() { }
+    private void updateUI(Producer producer) {
+        if (producer != null) {
+            mBinding.userFamilyCount.setText(String.valueOf(producer.getFamilySize()));
+            mBinding.userLocation.setText("City of " + producer.getLocation());
+        }
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {

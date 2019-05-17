@@ -40,8 +40,8 @@ public class WasteProvider extends ContentProvider implements
     Lazy<WasteDao> wasteDao;
 
 	static {
-        MATCHER.addURI(AUTHORITY, WasteContract.WasteEntry.TABLE_NAME, CODE_WASTE_DIR);
-        MATCHER.addURI(AUTHORITY, WasteContract.WasteEntry.TABLE_NAME + "/#", CODE_WASTE_ITEM);
+        MATCHER.addURI(AUTHORITY, BlockChainContract.BlockEntry.TABLE_NAME, CODE_WASTE_DIR);
+        MATCHER.addURI(AUTHORITY, BlockChainContract.BlockEntry.TABLE_NAME + "/#", CODE_WASTE_ITEM);
 	}
 
     @Override
@@ -70,7 +70,7 @@ public class WasteProvider extends ContentProvider implements
                 break;
 
             case CODE_WASTE_ITEM:
-                id = uri.getQueryParameter(WasteContract.WasteEntry.COLUMN_ID);
+                id = uri.getQueryParameter(BlockChainContract.BlockEntry.COLUMN_WASTE_ID);
                 cursor = wasteDao.get().getWasteAsCursor(id);
                 cursor.setNotificationUri(context.getContentResolver(), uri);
                 break;

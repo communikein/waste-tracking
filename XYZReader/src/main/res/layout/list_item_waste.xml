@@ -67,12 +67,25 @@
             <TextView
                 android:id="@+id/waste_quantity"
                 android:layout_width="80dp"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:gravity="center"
-                android:text="10Kg"
+                tools:text="10"
                 android:textColor="@android:color/black"
-                android:textSize="22sp"
+                android:textSize="26sp"
+                android:textStyle="bold"
                 app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/waste_quantity_label"
+                app:layout_constraintEnd_toEndOf="parent"/>
+
+            <TextView
+                android:id="@+id/waste_quantity_label"
+                android:layout_width="80dp"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/waste_weight_label"
+                android:textColor="@android:color/black"
+                android:textSize="20sp"
+                app:layout_constraintTop_toBottomOf="@id/waste_quantity"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"/>
 
