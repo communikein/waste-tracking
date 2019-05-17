@@ -110,8 +110,7 @@ public class Producer extends Block implements Parcelable {
         String location = origin.readString();
         int familySize = origin.readInt();
 
-        Producer producer = new Producer(id, name, score, location, familySize);
-        return producer;
+        return new Producer(id, name, score, location, familySize);
     }
 
     public static Producer fromContentValues(ContentValues origin) {

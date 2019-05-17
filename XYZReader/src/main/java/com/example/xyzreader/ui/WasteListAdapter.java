@@ -20,9 +20,6 @@ import java.util.ArrayList;
 
 public class WasteListAdapter extends RecyclerView.Adapter<WasteListAdapter.ViewHolder> {
 
-    private String thumbnailTransitionName, shadeTransitionName,
-            titleTransitionName, byLineTransitionName;
-
     @Nullable
     private final WasteClickCallback mWasteClickCallback;
     public interface WasteClickCallback {
@@ -34,11 +31,6 @@ public class WasteListAdapter extends RecyclerView.Adapter<WasteListAdapter.View
     WasteListAdapter(@NonNull AppCompatActivity callback) {
         this.mWasteClickCallback = (WasteClickCallback) callback;
         this.mData = new ArrayList<>();
-
-        thumbnailTransitionName = callback.getString(R.string.transition_article_image);
-        shadeTransitionName = callback.getString(R.string.transition_article_shade);
-        titleTransitionName = callback.getString(R.string.transition_article_title);
-        byLineTransitionName = callback.getString(R.string.transition_article_byline);
     }
 
     public void setList(ArrayList<Waste> wastes) {
@@ -56,11 +48,6 @@ public class WasteListAdapter extends RecyclerView.Adapter<WasteListAdapter.View
                 LayoutInflater.from(parent.getContext()),
                 R.layout.list_item_waste, parent, false);
         mBinding.setCallback(mWasteClickCallback);
-
-        ViewCompat.setTransitionName(mBinding.userScoreThumbnail, thumbnailTransitionName);
-        ViewCompat.setTransitionName(mBinding.wasteType, shadeTransitionName);
-        ViewCompat.setTransitionName(mBinding.wasteDetails, titleTransitionName);
-        ViewCompat.setTransitionName(mBinding.wasteQuantity, byLineTransitionName);
 
         return new ViewHolder(mBinding);
     }

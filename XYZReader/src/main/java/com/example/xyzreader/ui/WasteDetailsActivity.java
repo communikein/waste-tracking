@@ -110,13 +110,6 @@ public class WasteDetailsActivity extends AppCompatActivity
     private void initToolbar() {
         ViewCompat.setElevation(mBinding.appbar, getResources().getDimension(R.dimen.app_bar_elevation));
 
-        // Change FAB icon color
-        Drawable myFabSrc = getResources().getDrawable(R.drawable.logo);
-        Drawable willBeWhite = myFabSrc.getConstantState().newDrawable();
-
-        int color = ContextCompat.getColor(WasteDetailsActivity.this, R.color.theme_primary_dark);
-        willBeWhite.mutate().setColorFilter(color, PorterDuff.Mode.MULTIPLY);
-
         setSupportActionBar(mBinding.toolbar);
         if (getSupportActionBar() != null) {
             getSupportActionBar().setDisplayShowTitleEnabled(true);

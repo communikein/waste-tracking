@@ -16,21 +16,16 @@
 -->
 
 <resources>
-    <color name="photo_placeholder">#ccc</color>
 
     <color name="theme_primary">#43a047</color>
     <color name="theme_primary_dark">#00701a</color>
-    <color name="theme_primary_light">#76d275</color>
 
     <color name="theme_secondary">#ffc107</color>
-    <color name="theme_secondary_dark">#c79100</color>
-    <color name="theme_secondary_light">#fff350</color>
     <color name="theme_secondary_semi_transparent">#f0ffc107</color>
 
     <color name="ltgray">#ffe0e0e0</color>
 
     <color name="article_title">#FCCC</color>
-    <color name="article_byline">#FCCC</color>
     <color name="article_shade">@color/theme_secondary</color>
     <color name="article_toolbar_background">@color/theme_primary</color>
 </resources>
