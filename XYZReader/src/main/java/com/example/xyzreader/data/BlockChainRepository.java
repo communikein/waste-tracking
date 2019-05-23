@@ -9,6 +9,7 @@ import android.util.Log;
 import com.example.xyzreader.AppExecutors;
 import com.example.xyzreader.data.database.WasteDao;
 import com.example.xyzreader.data.model.Block;
+import com.example.xyzreader.data.model.Thing;
 import com.example.xyzreader.data.model.Waste;
 import com.example.xyzreader.data.remote.RemoteSource;
 
@@ -18,14 +19,12 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
-import dagger.Lazy;
-
 @Singleton
 public class BlockChainRepository {
 
     private static final String LOG_TAG = BlockChainRepository.class.getSimpleName();
 
-    private static final String PREFERENCES = "preferences_articles";
+    private static final String PREFERENCES = "preferences_wastes";
     private static final String KEY_SELECTED_WASTE_POSITION = "selected_waste_position";
 
     private final WasteDao mWasteDao;
@@ -55,7 +54,7 @@ public class BlockChainRepository {
             else
                 Log.d(LOG_TAG, "Repository observer notified. Found NULL entries.");
 
-            handleArticlesReceived((ArrayList<Waste>) newOnlineData);
+            handleBlockReceived((ArrayList<Waste>) newOnlineData);
         }));
     }
 
@@ -75,7 +74,7 @@ public class BlockChainRepository {
         });
     }
 
-    private void handleArticlesReceived(ArrayList<Waste> newOnlineData) {
+    private void handleBlockReceived(ArrayList<Waste> newOnlineData) {
         if (isThereWaste() && newOnlineData != null) {
             mWasteDao.addWaste(newOnlineData);
 
@@ -98,16 +97,6 @@ public class BlockChainRepository {
                     else {
                         /* Remove is from the list of those that will be deleted from the DB */
                         oldEntries.remove(oldEntry);
-
-                        /* If the booklet entry's data has been modified */
-                        /*
-                            if (!newEntry.isIdentic(oldEntry)) {
-                            // Update the DB entry
-                            mWasteDao.updateArticle(newEntry);
-
-                            Log.d(LOG_TAG, "Entry updated.");
-                        }
-                        */
                     }
                 }
 
@@ -131,7 +120,7 @@ public class BlockChainRepository {
         return (ArrayList<Waste>) mWasteDao.getWastes();
     }
 
-    public LiveData<List<Block>> getBlockChainAsObserver() {
+    public LiveData<ArrayList<Thing>> getBlockChainAsObserver() {
         return mRemoteSource.getBlockChain();
     }
 

@@ -3,8 +3,6 @@ package com.example.xyzreader.ui;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.databinding.DataBindingUtil;
-import android.graphics.PorterDuff;
-import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.content.ContextCompat;
@@ -14,7 +12,6 @@ import android.view.MenuItem;
 
 import com.example.xyzreader.R;
 
-import com.example.xyzreader.data.BlockChainRepository;
 import com.example.xyzreader.data.FakeDataHelper;
 import com.example.xyzreader.data.model.Producer;
 import com.example.xyzreader.data.model.Waste;

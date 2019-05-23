@@ -8,10 +8,9 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-
-import org.json.JSONException;
-import org.json.JSONObject;
 
 
 public class Producer extends Block implements Parcelable {
@@ -21,20 +20,20 @@ public class Producer extends Block implements Parcelable {
     @ColumnInfo(index = true, name = BlockEntry.COLUMN_PRODUCER_ID)
     private String id;
 
-    @SerializedName("name")
-    @ColumnInfo(name = "name")
+    @SerializedName(BlockEntry.COLUMN_PRODUCER_NAME)
+    @ColumnInfo(name = BlockEntry.COLUMN_PRODUCER_NAME)
     private String name;
 
-    @SerializedName("score")
-    @ColumnInfo(name = "score")
+    @SerializedName(BlockEntry.COLUMN_PRODUCER_SCORE)
+    @ColumnInfo(name = BlockEntry.COLUMN_PRODUCER_SCORE)
     private double score;
 
-    @SerializedName("location")
-    @ColumnInfo(name = "location")
+    @SerializedName(BlockEntry.COLUMN_PRODUCER_LOCATION)
+    @ColumnInfo(name = BlockEntry.COLUMN_PRODUCER_LOCATION)
     private String location;
 
-    @SerializedName("family_size")
-    @ColumnInfo(name = "family_size")
+    @SerializedName(BlockEntry.COLUMN_PRODUCER_FAMILY_SIZE)
+    @ColumnInfo(name = BlockEntry.COLUMN_PRODUCER_FAMILY_SIZE)
     private int familySize;
 
 
@@ -47,7 +46,7 @@ public class Producer extends Block implements Parcelable {
         setLocation(location);
         setFamilySize(familySize);
 
-        super.setJson(this.toJSON());
+        super.setJson(this.getJson());
     }
 
 
@@ -115,10 +114,10 @@ public class Producer extends Block implements Parcelable {
 
     public static Producer fromContentValues(ContentValues origin) {
         String id = origin.getAsString(BlockEntry.COLUMN_PRODUCER_ID);
-        String name = origin.getAsString("name");
-        double score = origin.getAsDouble("score");
-        String location = origin.getAsString("location");
-        int familySize = origin.getAsInteger("family_size");
+        String name = origin.getAsString(BlockEntry.COLUMN_PRODUCER_NAME);
+        double score = origin.getAsDouble(BlockEntry.COLUMN_PRODUCER_SCORE);
+        String location = origin.getAsString(BlockEntry.COLUMN_PRODUCER_LOCATION);
+        int familySize = origin.getAsInteger(BlockEntry.COLUMN_PRODUCER_FAMILY_SIZE);
 
         return new Producer(id, name, score, location, familySize);
     }
@@ -127,28 +126,16 @@ public class Producer extends Block implements Parcelable {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(BlockEntry.COLUMN_PRODUCER_ID, producer.getId());
-        contentValues.put("name", producer.getName());
-        contentValues.put("score", producer.getScore());
-        contentValues.put("location", producer.getLocation());
-        contentValues.put("family_size", producer.getFamilySize());
+        contentValues.put(BlockEntry.COLUMN_PRODUCER_NAME, producer.getName());
+        contentValues.put(BlockEntry.COLUMN_PRODUCER_SCORE, producer.getScore());
+        contentValues.put(BlockEntry.COLUMN_PRODUCER_LOCATION, producer.getLocation());
+        contentValues.put(BlockEntry.COLUMN_PRODUCER_FAMILY_SIZE, producer.getFamilySize());
 
         return contentValues;
     }
 
-    public JSONObject toJSON() {
-        JSONObject dest = new JSONObject();
-
-        try {
-            dest.put(BlockEntry.COLUMN_PRODUCER_ID, getId());
-            dest.put("name", getName());
-            dest.put("score", getScore());
-            dest.put("location", getLocation());
-            dest.put("family_size", getFamilySize());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return dest;
+    public JsonObject toJSON() {
+        return new Gson().fromJson(new Gson().toJson(this), JsonObject.class);
     }
 
 

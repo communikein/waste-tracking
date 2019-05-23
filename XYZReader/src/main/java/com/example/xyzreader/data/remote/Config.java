@@ -7,6 +7,6 @@ import java.net.URL;
 
 public class Config {
 
-    public static final String BASE_URL = "https://raw.githubusercontent.com/TNTest/xyzreader/master/";
+    public static final String BASE_URL = "https://blockchain.tim.it:3268/";
 
 }

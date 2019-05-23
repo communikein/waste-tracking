@@ -5,10 +5,10 @@ import android.os.Parcel;
 import android.os.Parcelable;
 
 import com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
-import org.json.JSONException;
-import org.json.JSONObject;
 
 public class Landfill extends Block implements Parcelable {
 
@@ -21,7 +21,7 @@ public class Landfill extends Block implements Parcelable {
 
         setId(id);
 
-        super.setJson(this.toJSON());
+        super.setJson(this.getJson());
     }
 
     public String getId() {
@@ -63,16 +63,8 @@ public class Landfill extends Block implements Parcelable {
         return contentValues;
     }
 
-    public JSONObject toJSON() {
-        JSONObject dest = new JSONObject();
-
-        try {
-            dest.put(BlockEntry.COLUMN_LANDFILL_ID, getId());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return dest;
+    public JsonObject toJSON() {
+        return new Gson().fromJson(new Gson().toJson(this), JsonObject.class);
     }
 
 

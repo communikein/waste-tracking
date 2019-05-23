@@ -13,9 +13,11 @@ import android.view.View;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.contentprovider.BlockChainContract.BlockEntry;
 import com.example.xyzreader.data.model.Block;
+import com.example.xyzreader.data.model.Thing;
 import com.example.xyzreader.databinding.ActivityBlockChainListBinding;
 import com.example.xyzreader.viewmodel.BlockChainListViewModel;
 import com.example.xyzreader.viewmodel.factory.BlockChainListViewModelFactory;
+import com.google.gson.JsonObject;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -65,43 +67,39 @@ public class BlockChainListActivity extends AppCompatActivity
 
         mViewModel.getBlockChain().observe(this, blockChain -> {
             if (blockChain != null) {
-                mAdapter.setList(new ArrayList<>(blockChain));
+                mAdapter.setList(blockChain);
 
                 mWastesIds = new String[blockChain.size()];
                 for (int i=0; i<blockChain.size(); i++) {
-                    JSONObject block = blockChain.get(i).getJson();
-                    String id = null;
+                    JsonObject block = blockChain.get(i).getData().getJson();
+                    String id;
 
-                    try {
-                        if (block.has(BlockEntry.COLUMN_WASTE_ID))
-                            id = block.getString(BlockEntry.COLUMN_WASTE_ID);
+                    if (block.has(BlockEntry.COLUMN_WASTE_ID))
+                        id = block.get(BlockEntry.COLUMN_WASTE_ID).getAsString();
 
-                        else if (block.has(BlockEntry.COLUMN_PRODUCER_ID))
-                            id = block.getString(BlockEntry.COLUMN_PRODUCER_ID);
+                    else if (block.has(BlockEntry.COLUMN_PRODUCER_ID))
+                        id = block.get(BlockEntry.COLUMN_PRODUCER_ID).getAsString();
 
-                        else if (block.has(BlockEntry.COLUMN_COLLECTOR_ID))
-                            id = block.getString(BlockEntry.COLUMN_COLLECTOR_ID);
+                    else if (block.has(BlockEntry.COLUMN_COLLECTOR_ID))
+                        id = block.get(BlockEntry.COLUMN_COLLECTOR_ID).getAsString();
 
-                        else if (block.has(BlockEntry.COLUMN_PREV_WASTE_ID))
-                            id = block.getString(BlockEntry.COLUMN_PREV_WASTE_ID) + "-" +
-                                    block.getString(BlockEntry.COLUMN_PREV_OWNER_ID) + "-" +
-                                    block.getString(BlockEntry.COLUMN_NEXT_WASTE_ID) + "-" +
-                                    block.getString(BlockEntry.COLUMN_NEXT_OWNER_ID);
+                    else if (block.has(BlockEntry.COLUMN_PREV_WASTE_ID))
+                        id = block.get(BlockEntry.COLUMN_PREV_WASTE_ID).getAsString() + "-" +
+                                block.get(BlockEntry.COLUMN_PREV_OWNER_ID).getAsString() + "-" +
+                                block.get(BlockEntry.COLUMN_NEXT_WASTE_ID).getAsString() + "-" +
+                                block.get(BlockEntry.COLUMN_NEXT_OWNER_ID).getAsString();
 
-                        else if (block.has(BlockEntry.COLUMN_TREATMENT_TYPE))
-                            id = block.getString(BlockEntry.COLUMN_TREATMENT_TYPE);
+                    else if (block.has(BlockEntry.COLUMN_TREATMENT_TYPE))
+                        id = block.get(BlockEntry.COLUMN_TREATMENT_TYPE).getAsString();
 
-                        else if (block.has(BlockEntry.COLUMN_LANDFILL_ID))
-                            id = block.getString(BlockEntry.COLUMN_LANDFILL_ID);
+                    else if (block.has(BlockEntry.COLUMN_LANDFILL_ID))
+                        id = block.get(BlockEntry.COLUMN_LANDFILL_ID).getAsString();
 
-                        else if (block.has(BlockEntry.COLUMN_POWER_ID))
-                            id = block.getString(BlockEntry.COLUMN_POWER_ID);
+                    else if (block.has(BlockEntry.COLUMN_POWER_ID))
+                        id = block.get(BlockEntry.COLUMN_POWER_ID).getAsString();
 
-                        else
-                            id = block.getString(BlockEntry.COLUMN_RECYCLE_ID);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
+                    else
+                        id = block.get(BlockEntry.COLUMN_RECYCLE_ID).getAsString();
 
                     mWastesIds[i] = id;
                 }
@@ -118,7 +116,7 @@ public class BlockChainListActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListItemClick(View view, Block block) { }
+    public void onListItemClick(View view, Thing block) { }
 
 
     private void initToolbar() {

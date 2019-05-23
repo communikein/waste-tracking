@@ -5,7 +5,9 @@ import android.arch.lifecycle.ViewModel;
 
 import com.example.xyzreader.data.BlockChainRepository;
 import com.example.xyzreader.data.model.Block;
+import com.example.xyzreader.data.model.Thing;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -14,7 +16,7 @@ public class BlockChainListViewModel extends ViewModel {
 
     private final BlockChainRepository mRepository;
 
-    private final LiveData<List<Block>> mData;
+    private final LiveData<ArrayList<Thing>> mData;
 
     @Inject
     public BlockChainListViewModel(BlockChainRepository repository) {
@@ -24,7 +26,7 @@ public class BlockChainListViewModel extends ViewModel {
     }
 
 
-    public LiveData<List<Block>> getBlockChain() {
+    public LiveData<ArrayList<Thing>> getBlockChain() {
         return mData;
     }
 

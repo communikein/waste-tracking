@@ -12,11 +12,9 @@ import android.support.annotation.NonNull;
 
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.contentprovider.BlockChainContract;
+import com.google.gson.Gson;
+import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.util.ArrayList;
 
@@ -89,7 +87,7 @@ public class Waste extends Block implements Parcelable {
     @ColumnInfo(name = COLUMN_POWER_ENERGY_PRODUCTION)
     private double powerEnergyProduction;
 
-    @SerializedName(COLUMN_POWER_ENERGY_PRODUCTION)
+    @SerializedName(COLUMN_POWER_HEATING_LEVELS)
     @ColumnInfo(name = COLUMN_POWER_HEATING_LEVELS)
     private double powerHeatingLevels;
 
@@ -117,51 +115,47 @@ public class Waste extends Block implements Parcelable {
         setQuality(quality);
         setParameters(parameters);
 
-        super.setJson(this.toJSON());
+        super.setJson(this.getJson());
     }
 
-    public Waste(JSONObject origin) {
+    public Waste(JsonObject origin) {
         super(origin);
 
-        try {
-            String id = origin.getString(COLUMN_WASTE_ID);
-            String type = origin.getString(COLUMN_WASTE_TYPE);
-            double weight = origin.getDouble(COLUMN_WASTE_WEIGHT);
-            double volume = origin.getDouble(COLUMN_WASTE_VOLUME);
-            String quality = origin.getString(COLUMN_WASTE_QUALITY);
-            String parameters = origin.getString(COLUMN_WASTE_PARAMETERS);
+        String id = origin.get(COLUMN_WASTE_ID).getAsString();
+        String type = origin.get(COLUMN_WASTE_TYPE).getAsString();
+        double weight = origin.get(COLUMN_WASTE_WEIGHT).getAsDouble();
+        double volume = origin.get(COLUMN_WASTE_VOLUME).getAsDouble();
+        String quality = origin.get(COLUMN_WASTE_QUALITY).getAsString();
+        String parameters = origin.get(COLUMN_WASTE_PARAMETERS).getAsString();
 
-            String treatment_type = origin.getString(COLUMN_TREATMENT_TYPE);
-            double recycled_quantity = origin.getDouble(COLUMN_RECYCLE_RECYCLED_QUANTITY);
-            double recycle_processing_waste = origin.getDouble(COLUMN_RECYCLE_PROCESSING_WASTE);
+        String treatment_type = origin.get(COLUMN_TREATMENT_TYPE).getAsString();
+        double recycled_quantity = origin.get(COLUMN_RECYCLE_RECYCLED_QUANTITY).getAsDouble();
+        double recycle_processing_waste = origin.get(COLUMN_RECYCLE_PROCESSING_WASTE).getAsDouble();
 
-            double power_energy_production = origin.getDouble(COLUMN_POWER_ENERGY_PRODUCTION);
-            double power_heating_levels = origin.getDouble(COLUMN_POWER_HEATING_LEVELS);
+        double power_energy_production = origin.get(COLUMN_POWER_ENERGY_PRODUCTION).getAsDouble();
+        double power_heating_levels = origin.get(COLUMN_POWER_HEATING_LEVELS).getAsDouble();
 
-            String landfill_water_parameters = origin.getString(COLUMN_LANDFILL_WATER_PARAMETERS);
-            String landfill_air_parameters = origin.getString(COLUMN_LANDFILL_AIR_PARAMETERS);
-            String landfill_gas_production = origin.getString(COLUMN_LANDFILL_GAS_PRODUCTION);
+        String landfill_water_parameters = origin.get(COLUMN_LANDFILL_WATER_PARAMETERS).getAsString();
+        String landfill_air_parameters = origin.get(COLUMN_LANDFILL_AIR_PARAMETERS).getAsString();
+        String landfill_gas_production = origin.get(COLUMN_LANDFILL_GAS_PRODUCTION).getAsString();
 
-            setId(id);
-            setType(type);
-            setWeight(weight);
-            setVolume(volume);
-            setQuality(quality);
-            setParameters(parameters);
+        setId(id);
+        setType(type);
+        setWeight(weight);
+        setVolume(volume);
+        setQuality(quality);
+        setParameters(parameters);
 
-            setTreatmentType(treatment_type);
-            setRecycledQuantity(recycled_quantity);
-            setRecycleProcessingWaste(recycle_processing_waste);
+        setTreatmentType(treatment_type);
+        setRecycledQuantity(recycled_quantity);
+        setRecycleProcessingWaste(recycle_processing_waste);
 
-            setPowerEnergyProduction(power_energy_production);
-            setPowerHeatingLevels(power_heating_levels);
+        setPowerEnergyProduction(power_energy_production);
+        setPowerHeatingLevels(power_heating_levels);
 
-            setLandfillWaterParameters(landfill_water_parameters);
-            setLandfillAirParameters(landfill_air_parameters);
-            setLandfillGasProduction(landfill_gas_production);
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        setLandfillWaterParameters(landfill_water_parameters);
+        setLandfillAirParameters(landfill_air_parameters);
+        setLandfillGasProduction(landfill_gas_production);
     }
 
 
@@ -377,17 +371,13 @@ public class Waste extends Block implements Parcelable {
         return waste;
     }
 
-    public static ArrayList<Waste> fromJSONArray(JSONArray array) {
+    public static ArrayList<Waste> fromJSONArray(ArrayList<JsonObject> array) {
         ArrayList<Waste> result = new ArrayList<>();
 
-        if (array != null) for (int i=0; i<array.length(); i++) {
+        if (array != null) for (JsonObject object : array) {
             Waste waste = null;
-            try {
-                if (array.getJSONObject(i).has(COLUMN_WASTE_ID))
-                    waste = new Waste(array.getJSONObject(i));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
+            if (object.has(COLUMN_WASTE_ID))
+                waste = new Gson().fromJson(object, Waste.class);
             if (waste != null)
                 result.add(waste);
         }
@@ -395,32 +385,8 @@ public class Waste extends Block implements Parcelable {
         return result;
     }
 
-    public JSONObject toJSON() {
-        JSONObject dest = new JSONObject();
-
-        try {
-            dest.put(COLUMN_WASTE_ID, getId());
-            dest.put(COLUMN_WASTE_TYPE, getType());
-            dest.put(COLUMN_WASTE_WEIGHT, getWeight());
-            dest.put(COLUMN_WASTE_VOLUME, getVolume());
-            dest.put(COLUMN_WASTE_QUALITY, getQuality());
-            dest.put(COLUMN_WASTE_PARAMETERS, getParameters());
-
-            dest.put(COLUMN_TREATMENT_TYPE, getTreatmentType());
-            dest.put(COLUMN_RECYCLE_RECYCLED_QUANTITY, getRecycledQuantity());
-            dest.put(COLUMN_RECYCLE_PROCESSING_WASTE, getRecycleProcessingWaste());
-
-            dest.put(COLUMN_POWER_ENERGY_PRODUCTION, getPowerEnergyProduction());
-            dest.put(COLUMN_POWER_HEATING_LEVELS, getPowerHeatingLevels());
-
-            dest.put(COLUMN_LANDFILL_WATER_PARAMETERS, getLandfillWaterParameters());
-            dest.put(COLUMN_LANDFILL_AIR_PARAMETERS, getLandfillAirParameters());
-            dest.put(COLUMN_LANDFILL_GAS_PRODUCTION, getLandfillGasProduction());
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
-
-        return dest;
+    public JsonObject toJSON() {
+        return new Gson().fromJson(new Gson().toJson(this), JsonObject.class);
     }
 
 

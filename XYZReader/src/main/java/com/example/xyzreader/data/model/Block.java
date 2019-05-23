@@ -2,42 +2,34 @@ package com.example.xyzreader.data.model;
 
 import android.arch.persistence.room.Ignore;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
 public class Block {
 
     @Ignore
-    private JSONObject json;
+    private JsonObject json;
 
-    public Block(JSONObject origin) {
+    public Block(JsonObject origin) {
         this.json = origin;
     }
 
-    public JSONObject getJson() {
+    public JsonObject getJson() {
         return json;
     }
 
-    public void setJson(JSONObject json) {
+    public void setJson(JsonObject json) {
         this.json = json;
     }
 
 
-    public static <T> ArrayList<T>  fromJSONArray(JSONArray array, Class<T> base) {
+    public static <T> ArrayList<T>  fromJSONArray(ArrayList<JsonObject> array, Class<T> base) {
         ArrayList<T> result = new ArrayList<>();
 
-        if (array != null) for (int i=0; i<array.length(); i++) {
-            Block block = null;
-            try {
-                block = new Block(array.getJSONObject(i));
-            } catch (JSONException e) {
-                e.printStackTrace();
-            }
-            if (block != null)
-                result.add(base.cast(block));
+        if (array != null) for (JsonObject object : array) {
+            Block block = new Block(object);
+            result.add(base.cast(block));
         }
 
         return result;
