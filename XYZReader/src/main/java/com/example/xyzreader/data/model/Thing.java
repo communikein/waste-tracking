@@ -1,6 +1,6 @@
 package com.example.xyzreader.data.model;
 
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
@@ -9,9 +9,9 @@ public class Thing {
     private ArrayList<String> identities;
     private String owner;
     private boolean isValid;
-    private Block data;
+    private JsonObject data;
 
-    public Thing(ArrayList<String> identities, String owner, boolean isValid, Block data) {
+    public Thing(ArrayList<String> identities, String owner, boolean isValid, JsonObject data) {
         this.identities = identities;
         this.owner = owner;
         this.isValid = isValid;
@@ -42,11 +42,11 @@ public class Thing {
         this.isValid = isValid;
     }
 
-    public Block getData() {
+    public JsonObject getData() {
         return data;
     }
 
-    public void setData(Block data) {
+    public void setData(JsonObject data) {
         this.data = data;
     }
 

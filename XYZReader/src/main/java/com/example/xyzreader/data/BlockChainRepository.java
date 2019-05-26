@@ -8,10 +8,9 @@ import android.util.Log;
 
 import com.example.xyzreader.AppExecutors;
 import com.example.xyzreader.data.database.WasteDao;
-import com.example.xyzreader.data.model.Block;
-import com.example.xyzreader.data.model.Thing;
 import com.example.xyzreader.data.model.Waste;
 import com.example.xyzreader.data.remote.RemoteSource;
+import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -70,7 +69,7 @@ public class BlockChainRepository {
 
         mExecutors.diskIO().execute(() -> {
             fetchWastes(mApplication);
-            fetchBlockChain(mApplication);
+            fetchBlockChain();
         });
     }
 
@@ -120,7 +119,7 @@ public class BlockChainRepository {
         return (ArrayList<Waste>) mWasteDao.getWastes();
     }
 
-    public LiveData<ArrayList<Thing>> getBlockChainAsObserver() {
+    public LiveData<ArrayList<JsonObject>> getBlockChainAsObserver() {
         return mRemoteSource.getBlockChain();
     }
 
@@ -155,8 +154,11 @@ public class BlockChainRepository {
         mRemoteSource.fetchWastes(context);
     }
 
-    public void fetchBlockChain(Context context) {
-        mRemoteSource.fetchBlockChain(context);
+    public void addWaste(Waste waste) { mRemoteSource.addWaste(waste); }
+
+
+    public void fetchBlockChain() {
+        mRemoteSource.fetchBlockChain();
     }
 
 

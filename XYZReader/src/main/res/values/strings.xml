@@ -15,5 +15,12 @@
     <string name="waste_type_metal">Metal</string>
     <string name="waste_type_plastic">Plastic</string>
     <string name="waste_type_organic">Organic</string>
+    <string name="label_waste_plastic">Plastic</string>
+    <string name="label_waste_paper">Paper</string>
+    <string name="label_waste_metal">Metal</string>
+    <string name="label_waste_organic">Organic</string>
+    <string name="label_waste_glass">Glass</string>
+    <string name="label_waste_type">Waste type</string>
+    <string name="action_add">add</string>
 
 </resources>

@@ -9,18 +9,14 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
-public class TreatmentPlant extends Block implements Parcelable {
+public class TreatmentPlant implements Parcelable {
 
     @SerializedName(BlockEntry.COLUMN_TREATMENT_TYPE)
     private String id;
 
 
     public TreatmentPlant(String id) {
-        super(null);
-
         setId(id);
-
-        super.setJson(this.getJson());
     }
 
     public String getId() {
@@ -54,7 +50,11 @@ public class TreatmentPlant extends Block implements Parcelable {
         return new TreatmentPlant(id);
     }
 
-    public static ContentValues writeToContentValues(ChangeOwnership origin) {
+    public static TreatmentPlant fromJson(JsonObject origin) {
+        return new Gson().fromJson(origin, TreatmentPlant.class);
+    }
+
+    public static ContentValues toContentValues(ChangeOwnership origin) {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(BlockEntry.COLUMN_TREATMENT_TYPE, origin.getPrevWasteID());
@@ -62,7 +62,7 @@ public class TreatmentPlant extends Block implements Parcelable {
         return contentValues;
     }
 
-    public JsonObject toJSON() {
+    public JsonObject toJson() {
         return new Gson().fromJson(new Gson().toJson(this), JsonObject.class);
     }
 

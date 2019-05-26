@@ -2,15 +2,10 @@ package com.example.xyzreader.data.remote;
 
 import com.example.xyzreader.data.model.Authentication;
 import com.example.xyzreader.data.model.CreateThing;
-import com.example.xyzreader.data.model.Thing;
 import com.example.xyzreader.data.model.UpdateThing;
 import com.google.gson.JsonObject;
 
-import org.json.JSONArray;
-import org.json.JSONObject;
-
 import java.util.ArrayList;
-import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;

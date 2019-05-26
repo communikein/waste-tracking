@@ -13,7 +13,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Producer extends Block implements Parcelable {
+public class Producer implements Parcelable {
 
     @SerializedName(BlockEntry.COLUMN_PRODUCER_ID)
     @PrimaryKey
@@ -38,15 +38,11 @@ public class Producer extends Block implements Parcelable {
 
 
     public Producer(String id, String name, double score, String location, int familySize) {
-        super(null);
-
         setId(id);
         setName(name);
         setScore(score);
         setLocation(location);
         setFamilySize(familySize);
-
-        super.setJson(this.getJson());
     }
 
 
@@ -122,7 +118,11 @@ public class Producer extends Block implements Parcelable {
         return new Producer(id, name, score, location, familySize);
     }
 
-    public static ContentValues writeToContentValues(Producer producer) {
+    public static Producer fromJson(JsonObject origin) {
+        return new Gson().fromJson(origin, Producer.class);
+    }
+
+    public static ContentValues toContentValues(Producer producer) {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(BlockEntry.COLUMN_PRODUCER_ID, producer.getId());
@@ -134,7 +134,7 @@ public class Producer extends Block implements Parcelable {
         return contentValues;
     }
 
-    public JsonObject toJSON() {
+    public JsonObject toJson() {
         return new Gson().fromJson(new Gson().toJson(this), JsonObject.class);
     }
 

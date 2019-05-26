@@ -1,5 +1,6 @@
 package com.example.xyzreader.di.module;
 
+import com.example.xyzreader.ui.AddWasteActivity;
 import com.example.xyzreader.ui.BlockChainListActivity;
 import com.example.xyzreader.ui.UserDetailsActivity;
 import com.example.xyzreader.ui.WasteDetailsActivity;
@@ -22,5 +23,8 @@ public abstract class ActivitiesModule {
 
     @ContributesAndroidInjector
     abstract BlockChainListActivity contributeBlockChainListActivity();
+
+    @ContributesAndroidInjector
+    abstract AddWasteActivity contributeAddWasteActivity();
 
 }

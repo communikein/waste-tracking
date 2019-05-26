@@ -16,7 +16,7 @@
         android:label="@string/app_name"
         android:theme="@style/Theme.Bacon"
         tools:ignore="GoogleAppIndexingWarning">
-
+        <activity android:name=".ui.AddWasteActivity"></activity>
         <activity android:name=".ui.UserDetailsActivity" />
         <activity
             android:name=".ui.WasteListActivity"
@@ -34,7 +34,8 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value=".ui.WasteListActivity" />
         </activity>
-        <activity android:name=".ui.BlockChainListActivity"
+        <activity
+            android:name=".ui.BlockChainListActivity"
             android:parentActivityName=".ui.WasteListActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"

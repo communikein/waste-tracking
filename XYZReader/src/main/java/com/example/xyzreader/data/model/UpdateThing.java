@@ -1,11 +1,13 @@
 package com.example.xyzreader.data.model;
 
+import com.google.gson.JsonObject;
+
 public class UpdateThing {
 
     private int schemaIndex;
-    private Block data;
+    private JsonObject data;
 
-    public UpdateThing(int schemaIndex, Block data) {
+    public UpdateThing(int schemaIndex, JsonObject data) {
         this.schemaIndex = schemaIndex;
         this.data = data;
     }
@@ -18,11 +20,11 @@ public class UpdateThing {
         this.schemaIndex = schemaIndex;
     }
 
-    public Block getData() {
+    public JsonObject getData() {
         return data;
     }
 
-    public void setData(Block data) {
+    public void setData(JsonObject data) {
         this.data = data;
     }
 

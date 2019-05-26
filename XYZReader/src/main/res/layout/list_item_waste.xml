@@ -26,6 +26,16 @@
             android:layout_height="wrap_content"
             android:padding="8dp">
 
+            <ImageView
+                android:id="@+id/user_score_thumbnail"
+                android:layout_width="80dp"
+                android:layout_height="80dp"
+                android:adjustViewBounds="true"
+                android:scaleType="centerCrop"
+                tools:background="@drawable/ic_face_sad"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"/>
+
             <TextView
                 android:id="@+id/waste_type"
                 style="@style/TextAppearance.AppCompat.Large"
@@ -34,35 +44,14 @@
                 android:paddingBottom="4dp"
                 android:textColor="@android:color/black"
                 android:ellipsize="end"
-                android:maxLines="4"
-                android:text="Frazione Umida"
+                android:maxLines="1"
+                tools:text="Organico"
+                android:layout_marginStart="16dp"
+                android:layout_marginEnd="16dp"
                 app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toStartOf="@id/waste_quantity"/>
-
-            <ImageView
-                android:id="@+id/user_score_thumbnail"
-                android:layout_width="60dp"
-                android:layout_height="60dp"
-                android:adjustViewBounds="true"
-                android:scaleType="centerCrop"
-                tools:background="@drawable/ic_face_sad"
-                app:layout_constraintTop_toBottomOf="@id/waste_type"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
-                android:id="@+id/waste_details"
-                style="@style/TextAppearance.AppCompat.Subhead"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_margin="8dp"
-                android:ellipsize="end"
-                android:maxLines="4"
-                android:textColor="@color/ltgray"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/waste_quantity"
                 app:layout_constraintStart_toEndOf="@id/user_score_thumbnail"
-                app:layout_constraintTop_toBottomOf="@id/waste_type" />
+                app:layout_constraintEnd_toStartOf="@id/waste_quantity"/>
 
             <TextView
                 android:id="@+id/waste_quantity"

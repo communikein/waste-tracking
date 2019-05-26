@@ -1,0 +1,222 @@
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <android.support.v7.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <android.support.design.widget.AppBarLayout
+            android:id="@+id/appbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:background="@color/theme_primary">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?actionBarSize"
+                app:layout_scrollFlags="scroll|enterAlways"
+                app:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar" />
+
+        </android.support.design.widget.AppBarLayout>
+
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/tryid"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_anchor="@id/appbar"
+            app:layout_anchorGravity="bottom"
+            android:padding="16dp">
+
+            <android.support.v7.widget.CardView
+                android:id="@+id/title_view"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="true"
+                android:layout_margin="@dimen/article_body_card_margin"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:id="@+id/user_profile_label"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:padding="@dimen/article_body_padding"
+                        android:textColor="@android:color/black"
+                        android:textColorLink="@color/theme_secondary"
+                        android:textSize="28sp"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:gravity="center"
+                        android:text="Register New Waste" />
+
+                    <ImageView
+                        android:id="@+id/waste_add_codescan"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        tools:background="@drawable/ic_photo_black"
+                        app:layout_constraintTop_toBottomOf="@id/user_profile_label"
+                        app:layout_constraintEnd_toStartOf="@id/waste_add_rfid"
+                        app:layout_constraintStart_toStartOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/label_code_scan"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingBottom="@dimen/article_body_padding"
+                        android:text="Scan QR code"
+                        android:textColor="@android:color/black"
+                        android:textColorLink="@color/theme_secondary"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="@+id/waste_add_codescan"
+                        app:layout_constraintStart_toStartOf="@+id/waste_add_codescan"
+                        app:layout_constraintTop_toBottomOf="@id/waste_add_codescan" />
+
+                    <ImageView
+                        android:id="@+id/waste_add_rfid"
+                        android:layout_width="60dp"
+                        android:layout_height="60dp"
+                        android:adjustViewBounds="true"
+                        android:scaleType="centerCrop"
+                        tools:background="@drawable/ic_nearby_black"
+                        app:layout_constraintTop_toBottomOf="@id/user_profile_label"
+                        app:layout_constraintStart_toEndOf="@id/waste_add_codescan"
+                        app:layout_constraintEnd_toEndOf="parent"/>
+
+                    <TextView
+                        android:id="@+id/label_rfid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingBottom="@dimen/article_body_padding"
+                        android:text="Scan RFID"
+                        android:textColor="@android:color/black"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="@+id/waste_add_rfid"
+                        app:layout_constraintStart_toStartOf="@+id/waste_add_rfid"
+                        app:layout_constraintTop_toBottomOf="@id/waste_add_rfid" />
+
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.v7.widget.CardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:clipToPadding="true"
+                android:layout_margin="@dimen/article_body_card_margin"
+                app:layout_constraintTop_toBottomOf="@id/title_view"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent">
+
+                <android.support.constraint.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="16dp">
+
+                    <TextView
+                        android:id="@+id/label_waste_type"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:text="@string/label_waste_type"
+                        android:textSize="18sp"/>
+
+                    <RadioGroup
+                        android:id="@+id/radio_waste_type_group"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        app:layout_constraintTop_toBottomOf="@id/label_waste_type"
+                        app:layout_constraintStart_toStartOf="parent"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginBottom="8dp">
+
+                        <RadioButton
+                            android:id="@+id/radio_waste_plastic"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_waste_plastic"/>
+
+                        <RadioButton
+                            android:id="@+id/radio_waste_paper"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_waste_paper"/>
+
+                        <RadioButton
+                            android:id="@+id/radio_waste_metal"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_waste_metal"/>
+
+                        <RadioButton
+                            android:id="@+id/radio_waste_organic"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_waste_organic"/>
+
+                        <RadioButton
+                            android:id="@+id/radio_waste_glass"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/label_waste_glass"/>
+
+                    </RadioGroup>
+
+                    <EditText
+                        android:id="@+id/text_waste_weight"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        app:layout_constraintTop_toBottomOf="@id/radio_waste_type_group"
+                        android:hint="Weight"
+                        android:layout_marginBottom="8dp"/>
+
+                    <EditText
+                        android:id="@+id/text_waste_volume"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="numberDecimal"
+                        app:layout_constraintTop_toBottomOf="@id/text_waste_weight"
+                        android:hint="Volume"
+                        android:layout_marginBottom="8dp"/>
+
+                    <EditText
+                        android:id="@+id/text_waste_params"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start|top"
+                        android:inputType="textMultiLine"
+                        app:layout_constraintTop_toBottomOf="@id/text_waste_volume"
+                        android:hint="Parameters" />
+
+                </android.support.constraint.ConstraintLayout>
+
+            </android.support.v7.widget.CardView>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab_add"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:layout_marginRight="8dp"
+                android:background="@color/theme_secondary"
+                android:contentDescription="@string/action_add"
+                android:src="@drawable/ic_add_white"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:fabSize="normal" />
+
+        </android.support.constraint.ConstraintLayout>
+
+    </android.support.v7.widget.LinearLayoutCompat>
+
+</layout>

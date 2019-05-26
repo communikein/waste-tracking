@@ -20,7 +20,7 @@ import dagger.android.AndroidInjection;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.support.HasSupportFragmentInjector;
 
-public class UserDetailsActivity  extends AppCompatActivity
+public class UserDetailsActivity extends AppCompatActivity
         implements HasSupportFragmentInjector {
 
     @Inject

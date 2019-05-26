@@ -35,7 +35,7 @@ import static com.example.xyzreader.data.contentprovider.BlockChainContract.Bloc
 
 
 @Entity(tableName = BlockChainContract.BlockEntry.TABLE_NAME)
-public class Waste extends Block implements Parcelable {
+public class Waste implements Parcelable {
 
     public static final String WASTE_TYPE_PLASTIC = "plastic";
     public static final String WASTE_TYPE_METAL = "metal";
@@ -106,56 +106,12 @@ public class Waste extends Block implements Parcelable {
 
 
     public Waste(String id, String type, double weight, double volume, String quality, String parameters) {
-        super(null);
-
         setId(id);
         setType(type);
         setWeight(weight);
         setVolume(volume);
         setQuality(quality);
         setParameters(parameters);
-
-        super.setJson(this.getJson());
-    }
-
-    public Waste(JsonObject origin) {
-        super(origin);
-
-        String id = origin.get(COLUMN_WASTE_ID).getAsString();
-        String type = origin.get(COLUMN_WASTE_TYPE).getAsString();
-        double weight = origin.get(COLUMN_WASTE_WEIGHT).getAsDouble();
-        double volume = origin.get(COLUMN_WASTE_VOLUME).getAsDouble();
-        String quality = origin.get(COLUMN_WASTE_QUALITY).getAsString();
-        String parameters = origin.get(COLUMN_WASTE_PARAMETERS).getAsString();
-
-        String treatment_type = origin.get(COLUMN_TREATMENT_TYPE).getAsString();
-        double recycled_quantity = origin.get(COLUMN_RECYCLE_RECYCLED_QUANTITY).getAsDouble();
-        double recycle_processing_waste = origin.get(COLUMN_RECYCLE_PROCESSING_WASTE).getAsDouble();
-
-        double power_energy_production = origin.get(COLUMN_POWER_ENERGY_PRODUCTION).getAsDouble();
-        double power_heating_levels = origin.get(COLUMN_POWER_HEATING_LEVELS).getAsDouble();
-
-        String landfill_water_parameters = origin.get(COLUMN_LANDFILL_WATER_PARAMETERS).getAsString();
-        String landfill_air_parameters = origin.get(COLUMN_LANDFILL_AIR_PARAMETERS).getAsString();
-        String landfill_gas_production = origin.get(COLUMN_LANDFILL_GAS_PRODUCTION).getAsString();
-
-        setId(id);
-        setType(type);
-        setWeight(weight);
-        setVolume(volume);
-        setQuality(quality);
-        setParameters(parameters);
-
-        setTreatmentType(treatment_type);
-        setRecycledQuantity(recycled_quantity);
-        setRecycleProcessingWaste(recycle_processing_waste);
-
-        setPowerEnergyProduction(power_energy_production);
-        setPowerHeatingLevels(power_heating_levels);
-
-        setLandfillWaterParameters(landfill_water_parameters);
-        setLandfillAirParameters(landfill_air_parameters);
-        setLandfillGasProduction(landfill_gas_production);
     }
 
 
@@ -385,12 +341,15 @@ public class Waste extends Block implements Parcelable {
         return result;
     }
 
-    public JsonObject toJSON() {
+    public static Waste fromJson(JsonObject origin) {
+        return new Gson().fromJson(origin, Waste.class);
+    }
+
+    public JsonObject toJson() {
         return new Gson().fromJson(new Gson().toJson(this), JsonObject.class);
     }
 
-
-    public static ContentValues writeToContentValues(Waste waste) {
+    public static ContentValues toContentValues(Waste waste) {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(COLUMN_WASTE_ID, waste.getId());

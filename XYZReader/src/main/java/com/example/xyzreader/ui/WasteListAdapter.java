@@ -88,7 +88,6 @@ public class WasteListAdapter extends RecyclerView.Adapter<WasteListAdapter.View
 
             Waste waste = mBinding.getWaste();
             mBinding.wasteType.setText(waste.printType(mBinding.getRoot().getContext()));
-            mBinding.wasteDetails.setText(waste.getParameters());
             mBinding.wasteQuantity.setText(String.valueOf(waste.getWeight()));
             mBinding.userScoreThumbnail.setImageResource(feelingResource);
         }

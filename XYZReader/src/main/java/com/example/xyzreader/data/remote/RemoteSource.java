@@ -9,14 +9,14 @@ import com.example.xyzreader.AppExecutors;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.BlockDeserializer;
 import com.example.xyzreader.data.model.Authentication;
-import com.example.xyzreader.data.model.Block;
 import com.example.xyzreader.data.model.CreateThing;
-import com.example.xyzreader.data.model.Thing;
 import com.example.xyzreader.data.model.Waste;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -43,12 +43,22 @@ public class RemoteSource {
 
     private static final String LOG_TAG = RemoteSource.class.getSimpleName();
 
+    private static final int SCHEMA_ID_WASTE =7;
+    private static final int SCHEMA_ID_CHANGE_OWNERSHIP =8;
+    private static final int SCHEMA_ID_TREATMENT_PLANT =9;
+    private static final int SCHEMA_ID_COLLECTOR =10;
+    private static final int SCHEMA_ID_PRODUCER =11;
+    private static final int SCHEMA_ID_LANDFILL =12;
+    private static final int SCHEMA_ID_RECYCLER =13;
+    private static final int SCHEMA_ID_POWER =14;
+
+
     private final AppExecutors mExecutors;
 
     private final MutableLiveData<List<Waste>> mDownloadedWaste;
     private final MutableLiveData<Boolean> mLoadingState;
 
-    private final MutableLiveData<ArrayList<Thing>> mDownloadedBlocks;
+    private final MutableLiveData<ArrayList<JsonObject>> mDownloadedBlocks;
 
     @Inject
     public RemoteSource(AppExecutors executors) {
@@ -65,22 +75,18 @@ public class RemoteSource {
         return mDownloadedWaste;
     }
 
-    public LiveData<ArrayList<Thing>> getBlockChain() { return mDownloadedBlocks; }
+    public LiveData<ArrayList<JsonObject>> getBlockChain() { return mDownloadedBlocks; }
 
     public LiveData<Boolean> getLoadingState() {
         return mLoadingState;
     }
 
 
-    public void fetchBlockChain(Context context) {
+    public void fetchBlockChain() {
         // Notify any observer that the loading is started
         mLoadingState.postValue(true);
 
         mExecutors.networkIO().execute(() -> {
-            Gson blockGson = new GsonBuilder()
-                    .registerTypeAdapter(Block.class, new BlockDeserializer())
-                    .create();
-
             Retrofit retrofit = new Retrofit.Builder()
                     .baseUrl(Config.BASE_URL)
                     .addConverterFactory(GsonConverterFactory.create())
@@ -102,12 +108,62 @@ public class RemoteSource {
                         @Override
                         public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
                             if (response != null && response.body() != null) {
-                                mDownloadedBlocks.postValue(new ArrayList<>());
+                                mDownloadedBlocks.postValue(response.body());
                             }
                         }
 
                         @Override
                         public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
+                            Log.d("BLA", t.getMessage());
+                        }
+                    });
+                }
+            } catch (IOException e) {
+                Log.d(LOG_TAG, e.getMessage());
+            }
+
+            // Notify any observer that the loading is completed
+            mLoadingState.postValue(false);
+        });
+    }
+
+    public void addWaste(Waste waste) {
+        // Notify any observer that the loading is started
+        mLoadingState.postValue(true);
+
+        ArrayList<String> thingIdentities = new ArrayList<>();
+        thingIdentities.add(waste.getId());
+        String thingName = waste.getId();
+        CreateThing createThing = new CreateThing(thingIdentities, thingName, SCHEMA_ID_WASTE, waste.toJson());
+
+        mExecutors.networkIO().execute(() -> {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(Config.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            BackendRequests request = retrofit.create(BackendRequests.class);
+
+            try {
+                Response<Void> token = request.login(new Authentication("api@tim.it", "dimostratore.2008")).execute();
+                if (token != null) {
+                    String auth_token = token.headers().get("Auth");
+
+                    retrofit = new Retrofit.Builder()
+                            .baseUrl(Config.BASE_URL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+                    request = retrofit.create(BackendRequests.class);
+
+                    request.createThing(auth_token, createThing).enqueue(new Callback<Void>() {
+                        @Override
+                        public void onResponse(Call<Void> call, Response<Void> response) {
+                            if (response != null && response.body() != null) {
+
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<Void> call, Throwable t) {
                             Log.d("BLA", t.getMessage());
                         }
                     });
@@ -131,14 +187,6 @@ public class RemoteSource {
 
         mLoadingState.postValue(false);
     }
-
-    /*
-    public void fetchBlockChain(Context context) {
-        JSONArray origin = getJSON(context);
-        ArrayList<Block> blockChain = Block.fromJSONArray(origin, Block.class);
-        mDownloadedBlocks.postValue(blockChain);
-    }
-    */
 
     ArrayList<JsonObject> getJSON(Context context) {
         Writer writer = new StringWriter();

@@ -9,7 +9,7 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
-public class ChangeOwnership extends Block implements Parcelable {
+public class ChangeOwnership implements Parcelable {
 
     @SerializedName(BlockEntry.COLUMN_PREV_WASTE_ID)
     private String prevWasteID;
@@ -31,16 +31,12 @@ public class ChangeOwnership extends Block implements Parcelable {
 
 
     public ChangeOwnership(String prevWasteID, String prevOwnerID, String nextWasteID, String nextOwnerID, String coordinates, String date) {
-        super(null);
-
         setPrevWasteID(prevWasteID);
         setPrevOwnerID(prevOwnerID);
         setNextWasteID(nextWasteID);
         setNextOwnerID(nextOwnerID);
         setCoordinates(coordinates);
         setDate(date);
-
-        super.setJson(this.getJson());
     }
 
     public String getId() {
@@ -131,7 +127,11 @@ public class ChangeOwnership extends Block implements Parcelable {
         return new ChangeOwnership(prevWasteID, prevOwnerID, nextWasteID, nextOwnerID, coordinates, date);
     }
 
-    public static ContentValues writeToContentValues(ChangeOwnership origin) {
+    public static ChangeOwnership fromJson(JsonObject origin) {
+        return new Gson().fromJson(origin, ChangeOwnership.class);
+    }
+
+    public static ContentValues toContentValues(ChangeOwnership origin) {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(BlockEntry.COLUMN_PREV_WASTE_ID, origin.getPrevWasteID());
@@ -144,7 +144,7 @@ public class ChangeOwnership extends Block implements Parcelable {
         return contentValues;
     }
 
-    public JsonObject toJSON() {
+    public JsonObject toJson() {
         return new Gson().fromJson(new Gson().toJson(this), JsonObject.class);
     }
 

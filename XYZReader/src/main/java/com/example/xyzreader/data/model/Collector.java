@@ -10,18 +10,14 @@ import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
 
-public class Collector extends Block implements Parcelable {
+public class Collector implements Parcelable {
 
     @SerializedName(BlockEntry.COLUMN_COLLECTOR_ID)
     private String id;
 
 
     public Collector(String id) {
-        super(null);
-
         setId(id);
-
-        super.setJson(this.getJson());
     }
 
     public String getId() {
@@ -55,7 +51,11 @@ public class Collector extends Block implements Parcelable {
         return new Collector(id);
     }
 
-    public static ContentValues writeToContentValues(ChangeOwnership origin) {
+    public static Collector fromJson(JsonObject origin) {
+        return new Gson().fromJson(origin, Collector.class);
+    }
+
+    public static ContentValues toContentValues(ChangeOwnership origin) {
         ContentValues contentValues = new ContentValues();
 
         contentValues.put(BlockEntry.COLUMN_COLLECTOR_ID, origin.getPrevWasteID());
@@ -63,7 +63,7 @@ public class Collector extends Block implements Parcelable {
         return contentValues;
     }
 
-    public JsonObject toJSON() {
+    public JsonObject toJson() {
         return new Gson().fromJson(new Gson().toJson(this), JsonObject.class);
     }
 

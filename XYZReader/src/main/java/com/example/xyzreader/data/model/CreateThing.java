@@ -1,5 +1,7 @@
 package com.example.xyzreader.data.model;
 
+import com.google.gson.JsonObject;
+
 import java.util.ArrayList;
 
 public class CreateThing {
@@ -7,9 +9,9 @@ public class CreateThing {
     private ArrayList<String> identities;
     private String thing_name;
     private int schema_id;
-    private Block data;
+    private JsonObject data;
 
-    public CreateThing(ArrayList<String> identities, String thing_name, int schema_id, Block data) {
+    public CreateThing(ArrayList<String> identities, String thing_name, int schema_id, JsonObject data) {
         this.identities = identities;
         this.thing_name = thing_name;
         this.schema_id = schema_id;
@@ -40,11 +42,11 @@ public class CreateThing {
         this.schema_id = schema_id;
     }
 
-    public Block getData() {
+    public JsonObject getData() {
         return data;
     }
 
-    public void setData(Block data) {
+    public void setData(JsonObject data) {
         this.data = data;
     }
 }
