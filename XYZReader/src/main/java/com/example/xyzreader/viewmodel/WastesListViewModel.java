@@ -35,8 +35,8 @@ public class WastesListViewModel extends ViewModel {
         return mLoading;
     }
 
-    public void refreshWastes(Context context) {
-        mRepository.fetchWastes(context);
+    public void refreshWastes() {
+        mRepository.fetchWastes();
     }
 
 }

@@ -8,13 +8,19 @@ import android.util.Log;
 import com.example.xyzreader.AppExecutors;
 import com.example.xyzreader.R;
 import com.example.xyzreader.data.BlockDeserializer;
+import com.example.xyzreader.data.contentprovider.BlockChainContract;
 import com.example.xyzreader.data.model.Authentication;
 import com.example.xyzreader.data.model.CreateThing;
+import com.example.xyzreader.data.model.Thing;
 import com.example.xyzreader.data.model.Waste;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonDeserializer;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 import org.json.JSONObject;
 
@@ -25,6 +31,7 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
+import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -177,43 +184,56 @@ public class RemoteSource {
         });
     }
 
-    public void fetchWastes(Context context) {
+    public void fetchWastes() {
         // Notify any observer that the loading is started
         mLoadingState.postValue(true);
 
-        ArrayList<JsonObject> blockChain = getJSON(context);
-        ArrayList<Waste> wastes = Waste.fromJSONArray(blockChain);
-        mDownloadedWaste.postValue(wastes);
+        mExecutors.networkIO().execute(() -> {
+            Retrofit retrofit = new Retrofit.Builder()
+                    .baseUrl(Config.BASE_URL)
+                    .addConverterFactory(GsonConverterFactory.create())
+                    .build();
+            BackendRequests request = retrofit.create(BackendRequests.class);
 
-        mLoadingState.postValue(false);
-    }
+            try {
+                Response<Void> token = request.login(new Authentication("api@tim.it", "dimostratore.2008")).execute();
+                if (token != null) {
+                    String auth_token = token.headers().get("Auth");
 
-    ArrayList<JsonObject> getJSON(Context context) {
-        Writer writer = new StringWriter();
-        char[] buffer = new char[1024];
-        ArrayList<JsonObject> result = new ArrayList<>();
+                    retrofit = new Retrofit.Builder()
+                            .baseUrl(Config.BASE_URL)
+                            .addConverterFactory(GsonConverterFactory.create())
+                            .build();
+                    request = retrofit.create(BackendRequests.class);
 
-        try (InputStream is = context.getResources().openRawResource(R.raw.data)) {
-            Reader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
-            int n;
-            while ((n = reader.read(buffer)) != -1) {
-                writer.write(buffer, 0, n);
+                    request.getAllThings(auth_token).enqueue(new Callback<ArrayList<JsonObject>>() {
+                        @Override
+                        public void onResponse(Call<ArrayList<JsonObject>> call, Response<ArrayList<JsonObject>> response) {
+                            if (response != null && response.body() != null) {
+                                ArrayList<Waste> wastes = new ArrayList<>();
+                                for (JsonObject obj : response.body()) {
+                                    if (obj.getAsJsonObject("data").has(BlockChainContract.BlockEntry.COLUMN_WASTE_ID))
+                                        wastes.add(new Gson().fromJson(obj.getAsJsonObject("data"), Waste.class));
+                                }
+
+                                mDownloadedWaste.postValue(wastes);
+                            }
+                        }
+
+                        @Override
+                        public void onFailure(Call<ArrayList<JsonObject>> call, Throwable t) {
+                            Log.d("BLA", t.getMessage());
+                        }
+                    });
+                }
+            } catch (IOException e) {
+                Log.d(LOG_TAG, e.getMessage());
             }
 
-            String text = writer.toString();
-            JsonArray object = new Gson().fromJson(text, JsonArray.class);
-
-            for (int i=0; i<object.size(); i++)
-                result.add(object.get(i).getAsJsonObject());
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            result = new ArrayList<>();
-        }
-
-        return result;
+            // Notify any observer that the loading is completed
+            mLoadingState.postValue(false);
+        });
     }
-
 
 }
 

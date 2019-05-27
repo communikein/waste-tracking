@@ -2,9 +2,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:id="@+id/add_waste"
+        android:title="@string/action_add_waste"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_add_white"/>
+
+    <item
         android:id="@+id/developer"
         android:title="@string/action_developer"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:icon="@drawable/ic_infinity_white"/>
 
 </menu>

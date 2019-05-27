@@ -68,7 +68,7 @@ public class BlockChainRepository {
         mInitialized = true;
 
         mExecutors.diskIO().execute(() -> {
-            fetchWastes(mApplication);
+            fetchWastes();
             fetchBlockChain();
         });
     }
@@ -150,8 +150,8 @@ public class BlockChainRepository {
             deleteWaste(entry);
     }
 
-    public void fetchWastes(Context context) {
-        mRemoteSource.fetchWastes(context);
+    public void fetchWastes() {
+        mRemoteSource.fetchWastes();
     }
 
     public void addWaste(Waste waste) { mRemoteSource.addWaste(waste); }

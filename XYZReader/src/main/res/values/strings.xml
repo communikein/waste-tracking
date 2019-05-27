@@ -20,7 +20,16 @@
     <string name="label_waste_metal">Metal</string>
     <string name="label_waste_organic">Organic</string>
     <string name="label_waste_glass">Glass</string>
-    <string name="label_waste_type">Waste type</string>
+    <string name="label_waste_type">Waste type: </string>
     <string name="action_add">add</string>
+    <string name="label_waste_id_start">waste:type:</string>
+    <string name="action_add_waste">add waste</string>
+    <string name="label_waste_id_title">ID: </string>
+    <string name="label_waste_weight">Weight: </string>
+    <string name="label_waste_kg">Kg</string>
+    <string name="label_waste_volume">Volume:</string>
+    <string name="label_waste_meters">m<sup>2</sup></string>
+    <string name="label_volume_meters">m<sup>2</sup></string>
+    <string name="label_waste_parameters">Parameters:</string>
 
 </resources>

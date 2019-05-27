@@ -72,6 +72,7 @@ public class WasteListActivity extends AppCompatActivity
         layoutManager.setOrientation(LinearLayoutManager.VERTICAL);
         mBinding.recyclerView.setLayoutManager(layoutManager);
         mBinding.recyclerView.setAdapter(mAdapter);
+        mBinding.swipeRefreshLayout.setOnRefreshListener(this);
 
         mWastesIds = null;
         mViewModel.getWastes().observe(this, wastes -> {
@@ -132,11 +133,18 @@ public class WasteListActivity extends AppCompatActivity
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
-        if (id == R.id.developer) {
-            Intent intent = new Intent(this, BlockChainListActivity.class);
-            ActivityCompat.startActivity(this, intent, null);
+        Intent intent;
+        switch (id) {
+            case R.id.developer:
+                intent = new Intent(this, BlockChainListActivity.class);
+                ActivityCompat.startActivity(this, intent, null);
 
-            return true;
+                return true;
+            case R.id.add_waste:
+                intent = new Intent(this, AddWasteActivity.class);
+                ActivityCompat.startActivity(this, intent, null);
+
+                return true;
         }
 
         return super.onOptionsItemSelected(item);
@@ -160,7 +168,7 @@ public class WasteListActivity extends AppCompatActivity
     }
 
     private void refresh() {
-        mViewModel.refreshWastes(getApplication());
+        mViewModel.refreshWastes();
     }
 
     private void updateRefreshingUI() {

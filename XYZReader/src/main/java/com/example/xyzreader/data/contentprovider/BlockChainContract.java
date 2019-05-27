@@ -23,8 +23,8 @@ public class BlockChainContract {
         public static final String COLUMN_TREATMENT_TYPE = "TREATMENT_TYPE";
 
         public static final String COLUMN_RECYCLE_ID = "TREATMENT_PLANT_ID";
-        public static final String COLUMN_RECYCLE_RECYCLED_QUANTITY = "RECYCLED_QUANTITY";
-        public static final String COLUMN_RECYCLE_PROCESSING_WASTE = "RECYCLED_PROCESSING_WASTE";
+        public static final String COLUMN_RECYCLED_QUANTITY = "RECYCLED_QUANTITY";
+        public static final String COLUMN_RECYCLED_PROCESS_WASTE = "RECYCLED_PROCESS_WASTE";
 
         public static final String COLUMN_POWER_ID = "POWER_ID";
         public static final String COLUMN_POWER_ENERGY_PRODUCTION = "POWER_ENERGY_PRODUCTION";

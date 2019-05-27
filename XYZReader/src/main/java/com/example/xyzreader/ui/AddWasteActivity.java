@@ -6,9 +6,10 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.text.Html;
+import android.widget.RadioGroup;
 
 import com.example.xyzreader.R;
-import com.example.xyzreader.data.model.Producer;
 import com.example.xyzreader.data.model.Waste;
 import com.example.xyzreader.databinding.ActivityAddWasteBinding;
 import com.example.xyzreader.viewmodel.AddWasteViewModel;
@@ -54,7 +55,36 @@ public class AddWasteActivity extends AppCompatActivity
         initColors();
         initToolbar();
 
+        mBinding.labelVolumeMeters.setText(Html.fromHtml("m<span style=\"font-size:10pt\"><sup>3</sup></span>"));
         mBinding.fabAdd.setOnClickListener(v -> addWaste());
+        mBinding.radioWasteTypeGroup.setOnCheckedChangeListener(this::onWasteTypeChanged);
+        mBinding.radioWastePlastic.setChecked(true);
+    }
+
+    public void onWasteTypeChanged(RadioGroup group, int checkedId) {
+        String wasteType;
+        switch (checkedId) {
+            case R.id.radio_waste_glass:
+                wasteType = Waste.WASTE_TYPE_GLASS;
+                break;
+            case R.id.radio_waste_metal:
+                wasteType = Waste.WASTE_TYPE_METAL;
+                break;
+            case R.id.radio_waste_organic:
+                wasteType = Waste.WASTE_TYPE_ORGANIC;
+                break;
+            case R.id.radio_waste_paper:
+                wasteType = Waste.WASTE_TYPE_PAPER;
+                break;
+            case R.id.radio_waste_plastic:
+                wasteType = Waste.WASTE_TYPE_PLASTIC;
+                break;
+            default:
+                wasteType = "";
+                break;
+        }
+
+        mBinding.labelWasteId.setText("waste-" + wasteType + "-");
     }
 
     private void addWaste() {
@@ -83,8 +113,9 @@ public class AddWasteActivity extends AppCompatActivity
         double wasteVolume = Double.parseDouble(mBinding.textWasteVolume.getText().toString());
         String wasteParams = mBinding.textWasteParams.getText().toString();
         String wasteQuality = "good";
+        String wasteId = "waste:" + wasteType + ":" + mBinding.textWasteId.getText().toString();
 
-        Waste waste = new Waste("waste-" + "12", wasteType, wasteWeight, wasteVolume,
+        Waste waste = new Waste(wasteId, wasteType, wasteWeight, wasteVolume,
                 wasteQuality, wasteParams);
 
         mViewModel.addWaste(waste);
