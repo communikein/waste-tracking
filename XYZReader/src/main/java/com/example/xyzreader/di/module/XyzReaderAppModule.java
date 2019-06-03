@@ -35,8 +35,8 @@ public class XyzReaderAppModule {
     }
 
     @Singleton @Provides
-    RemoteSource provideNetworkDataSource(AppExecutors executors) {
-        return new RemoteSource(executors);
+    RemoteSource provideNetworkDataSource(AppExecutors executors, Application application) {
+        return new RemoteSource(executors, application);
     }
 
     @Singleton

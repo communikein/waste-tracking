@@ -1,5 +1,6 @@
 package com.example.xyzreader.data.remote;
 
+import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.arch.lifecycle.MutableLiveData;
 import android.content.Context;
@@ -7,22 +8,12 @@ import android.util.Log;
 
 import com.example.xyzreader.AppExecutors;
 import com.example.xyzreader.R;
-import com.example.xyzreader.data.BlockDeserializer;
 import com.example.xyzreader.data.contentprovider.BlockChainContract;
 import com.example.xyzreader.data.model.Authentication;
 import com.example.xyzreader.data.model.CreateThing;
-import com.example.xyzreader.data.model.Thing;
 import com.example.xyzreader.data.model.Waste;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonDeserializer;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonSerializationContext;
-import com.google.gson.JsonSerializer;
-
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -31,7 +22,6 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.io.StringWriter;
 import java.io.Writer;
-import java.lang.reflect.Type;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
@@ -64,17 +54,21 @@ public class RemoteSource {
 
     private final MutableLiveData<List<Waste>> mDownloadedWaste;
     private final MutableLiveData<Boolean> mLoadingState;
-
     private final MutableLiveData<ArrayList<JsonObject>> mDownloadedBlocks;
 
+    private final Authentication mCredentials;
+
     @Inject
-    public RemoteSource(AppExecutors executors) {
+    public RemoteSource(AppExecutors executors, Application application) {
         mExecutors = executors;
 
         mDownloadedWaste = new MutableLiveData<>();
         mLoadingState = new MutableLiveData<>();
-
         mDownloadedBlocks = new MutableLiveData<>();
+
+        JsonObject auth = getCredentials(application);
+        mCredentials = new Authentication(auth.get("username").getAsString(),
+                auth.get("password").getAsString());
     }
 
 
@@ -101,7 +95,7 @@ public class RemoteSource {
             BackendRequests request = retrofit.create(BackendRequests.class);
 
             try {
-                Response<Void> token = request.login(new Authentication("api@tim.it", "dimostratore.2008")).execute();
+                Response<Void> token = request.login(mCredentials).execute();
                 if (token != null) {
                     String auth_token = token.headers().get("Auth");
 
@@ -151,7 +145,7 @@ public class RemoteSource {
             BackendRequests request = retrofit.create(BackendRequests.class);
 
             try {
-                Response<Void> token = request.login(new Authentication("api@tim.it", "dimostratore.2008")).execute();
+                Response<Void> token = request.login(mCredentials).execute();
                 if (token != null) {
                     String auth_token = token.headers().get("Auth");
 
@@ -196,7 +190,7 @@ public class RemoteSource {
             BackendRequests request = retrofit.create(BackendRequests.class);
 
             try {
-                Response<Void> token = request.login(new Authentication("api@tim.it", "dimostratore.2008")).execute();
+                Response<Void> token = request.login(mCredentials).execute();
                 if (token != null) {
                     String auth_token = token.headers().get("Auth");
 
@@ -233,6 +227,27 @@ public class RemoteSource {
             // Notify any observer that the loading is completed
             mLoadingState.postValue(false);
         });
+    }
+
+    private JsonObject getCredentials(Context context) {
+        Writer writer = new StringWriter();
+        char[] buffer = new char[1024];
+        JsonObject result = null;
+
+        try (InputStream is = context.getResources().openRawResource(R.raw.credentials)) {
+            Reader reader = new BufferedReader(new InputStreamReader(is, StandardCharsets.UTF_8));
+            int n;
+            while ((n = reader.read(buffer)) != -1) {
+                writer.write(buffer, 0, n);
+            }
+
+            String text = writer.toString();
+            result = new Gson().fromJson(text, JsonObject.class);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return result;
     }
 
 }
