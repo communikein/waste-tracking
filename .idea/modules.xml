@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/XYZReader/XYZReader.iml" filepath="$PROJECT_DIR$/XYZReader/XYZReader.iml" />
-      <module fileurl="file://$PROJECT_DIR$/waste-tracking.iml" filepath="$PROJECT_DIR$/waste-tracking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/WasteTracking/WasteTracking.iml" filepath="$PROJECT_DIR$/WasteTracking/WasteTracking.iml" />
+      <module fileurl="file://$PROJECT_DIR$/waste-tracking-collector.iml" filepath="$PROJECT_DIR$/waste-tracking-collector.iml" />
     </modules>
   </component>
 </project>
