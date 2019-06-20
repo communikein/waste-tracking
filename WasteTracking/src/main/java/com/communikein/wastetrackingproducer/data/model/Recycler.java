@@ -9,7 +9,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
-
+/**
+ * This class represents the Recycler Facility object. A Recycler facility is a factory where the
+ * Waste is recycled into reusable material.
+ */
 public class Recycler implements Parcelable {
 
     @SerializedName(BlockEntry.COLUMN_RECYCLE_ID)

@@ -35,6 +35,10 @@ import retrofit2.Response;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
 
+/**
+ * This class provides the single source of truth for interfacing with the BlockChain Web APIs.
+ * It abstracts the complexity of the APIs creating an higher level for the programmer.
+ */
 @Singleton
 public class RemoteSource {
 

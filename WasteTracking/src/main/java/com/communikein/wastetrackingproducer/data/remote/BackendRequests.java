@@ -15,6 +15,11 @@ import retrofit2.http.Headers;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
+/**
+ * This class interfaces with the BlockChain Web APIs to provide methods to interact with the
+ * BlockChain: read, create, update, delete. It also provides authentication to the API backend,
+ * generating a Token to be used with any other interaction.
+ */
 public interface BackendRequests {
 
     @POST("users/login/")

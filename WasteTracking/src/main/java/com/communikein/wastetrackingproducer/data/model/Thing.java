@@ -4,6 +4,11 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
+/**
+ * This class represents a Thing. A Things are the only 'thing' that is understood by the
+ * BlockChain, thus every entity we want to store on the BlockChain has to be converted into a
+ * Thing.
+ */
 public class Thing {
 
     private ArrayList<String> identities;

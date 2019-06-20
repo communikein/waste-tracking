@@ -12,6 +12,9 @@ import javax.inject.Singleton;
 import dagger.Component;
 import dagger.android.support.AndroidSupportInjectionModule;
 
+/**
+ * Class necessary to Dagger to allow for dependency injection.
+ */
 @Singleton
 @Component(modules = {
         AndroidSupportInjectionModule.class,

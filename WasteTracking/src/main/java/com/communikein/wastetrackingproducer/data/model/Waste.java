@@ -33,7 +33,9 @@ import static com.communikein.wastetrackingproducer.data.contentprovider.BlockCh
 import static com.communikein.wastetrackingproducer.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_WASTE_VOLUME;
 import static com.communikein.wastetrackingproducer.data.contentprovider.BlockChainContract.BlockEntry.COLUMN_WASTE_WEIGHT;
 
-
+/**
+ * This class represents the Waste object.
+ */
 @Entity(tableName = BlockChainContract.BlockEntry.TABLE_NAME)
 public class Waste implements Parcelable {
 
@@ -74,6 +76,9 @@ public class Waste implements Parcelable {
     @ColumnInfo(name = COLUMN_TREATMENT_TYPE)
     private String treatmentType;
 
+
+    // The following two fields are used when a new Waste object is created after going through a
+    // Recycler Facility.
     @SerializedName(COLUMN_RECYCLED_QUANTITY)
     @ColumnInfo(name = COLUMN_RECYCLED_QUANTITY)
     private double recycledQuantity;
@@ -83,6 +88,8 @@ public class Waste implements Parcelable {
     private double recycleProcessingWaste;
 
 
+    // The following two fields are used when a new Waste object is created after going through a
+    // Power Plant.
     @SerializedName(COLUMN_POWER_ENERGY_PRODUCTION)
     @ColumnInfo(name = COLUMN_POWER_ENERGY_PRODUCTION)
     private double powerEnergyProduction;
@@ -92,6 +99,8 @@ public class Waste implements Parcelable {
     private double powerHeatingLevels;
 
 
+    // The following three fields are used when a new Waste object is created after getting to a
+    // Landfill.
     @SerializedName(COLUMN_LANDFILL_WATER_PARAMETERS)
     @ColumnInfo(name = COLUMN_LANDFILL_WATER_PARAMETERS)
     private String landfillWaterParameters;
@@ -121,11 +130,12 @@ public class Waste implements Parcelable {
     }
 
 
+    @NonNull
     public String getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(@NonNull String id) {
         this.id = id;
     }
 

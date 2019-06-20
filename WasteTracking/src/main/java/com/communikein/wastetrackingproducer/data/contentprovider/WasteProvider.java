@@ -22,6 +22,11 @@ import dagger.android.AndroidInjector;
 import dagger.android.DispatchingAndroidInjector;
 import dagger.android.HasContentProviderInjector;
 
+/**
+ * This class exposes access to the data stored in the internal DB to external applications
+ * via ContentProvider.
+ * It is possible to query information as well as create, delete and update new blocks.
+ */
 public class WasteProvider extends ContentProvider implements
         HasContentProviderInjector {
 
@@ -33,9 +38,11 @@ public class WasteProvider extends ContentProvider implements
 
 	private static final UriMatcher MATCHER = new UriMatcher(UriMatcher.NO_MATCH);
 
+	// Dependency injection via Dagger
     @Inject
     DispatchingAndroidInjector<ContentProvider> dispatchingAndroidInjector;
 
+    // Dependency injection via Dagger to provide access to the DB Dao
     @Inject
     Lazy<WasteDao> wasteDao;
 

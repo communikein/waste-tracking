@@ -9,6 +9,13 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * This class represents the Treatment Plant object. A Treatment Plant is a facility where the
+ * waste is treated to prepare it for the next step:
+ * - burnt in a Power Plant to produce electricity;
+ * - recycled in a Recycler Facility to obtain raw material to reuse;
+ * - dumped into a Landfill.
+ */
 public class TreatmentPlant implements Parcelable {
 
     @SerializedName(BlockEntry.COLUMN_TREATMENT_TYPE)

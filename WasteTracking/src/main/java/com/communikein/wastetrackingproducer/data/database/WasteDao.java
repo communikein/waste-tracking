@@ -12,6 +12,9 @@ import com.communikein.wastetrackingproducer.data.model.Waste;
 
 import java.util.List;
 
+/**
+ * This class provides the methods necessary to access (read/write) the DB.
+ */
 @Dao
 public interface WasteDao {
 

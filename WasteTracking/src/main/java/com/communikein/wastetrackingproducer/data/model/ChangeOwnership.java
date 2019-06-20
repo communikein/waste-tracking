@@ -9,6 +9,11 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
+/**
+ * This class represents the Change of Ownership object in which the waste owners are tracked,
+ * with the new waste objects created. This is what allows us to be able to track where the
+ * specific waste is coming from and who handled it.
+ */
 public class ChangeOwnership implements Parcelable {
 
     @SerializedName(BlockEntry.COLUMN_PREV_WASTE_ID)

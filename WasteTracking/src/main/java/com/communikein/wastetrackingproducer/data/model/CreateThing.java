@@ -4,6 +4,9 @@ import com.google.gson.JsonObject;
 
 import java.util.ArrayList;
 
+/**
+ * This is a helper class, needed to create new Things in the BlockChain.
+ */
 public class CreateThing {
 
     private ArrayList<String> identities;

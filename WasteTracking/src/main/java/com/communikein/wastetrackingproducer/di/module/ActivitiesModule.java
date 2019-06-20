@@ -9,6 +9,10 @@ import com.communikein.wastetrackingproducer.ui.WasteListActivity;
 import dagger.Module;
 import dagger.android.ContributesAndroidInjector;
 
+/**
+ * Class necessary to allow for dependency injection in the Activities. Every Activity that makes
+ * use of dependency injection must appear here.
+ */
 @Module
 public abstract class ActivitiesModule {
 

@@ -9,7 +9,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
-
+/**
+ * This class represents the Collector. The Collector is the entity that collects the waste from
+ * the Producer and brings it to the Treatment Facility.
+ */
 public class Collector implements Parcelable {
 
     @SerializedName(BlockEntry.COLUMN_COLLECTOR_ID)

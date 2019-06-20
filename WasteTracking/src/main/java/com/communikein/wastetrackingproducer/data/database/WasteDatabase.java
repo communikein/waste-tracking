@@ -6,6 +6,9 @@ import android.arch.persistence.room.TypeConverters;
 
 import com.communikein.wastetrackingproducer.data.model.Waste;
 
+/**
+ * Class necessary to create the DB object, listing which entries, version and converters to use
+ */
 @Database(entities = {Waste.class}, version = 1, exportSchema = false)
 @TypeConverters({Converters.class})
 public abstract class WasteDatabase extends RoomDatabase {

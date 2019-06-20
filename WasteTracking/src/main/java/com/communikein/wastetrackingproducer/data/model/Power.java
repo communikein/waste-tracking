@@ -9,7 +9,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
-
+/**
+ * This class represents the Power Plant object. The Power Plant is the place in which the Waste is
+ * burnt to produce heat and thus electricity.
+ */
 public class Power implements Parcelable {
 
     @SerializedName(BlockEntry.COLUMN_POWER_ID)

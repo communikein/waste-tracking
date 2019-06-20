@@ -2,6 +2,9 @@ package com.communikein.wastetrackingproducer.data.model;
 
 import com.google.gson.JsonObject;
 
+/**
+ * This is a helper class, needed to update Things in the BlockChain.
+ */
 public class UpdateThing {
 
     private int schemaIndex;

@@ -12,8 +12,6 @@ public class BlockDeserializer implements JsonDeserializer<JsonObject> {
 
     @Override
     public JsonObject deserialize(JsonElement json, Type typeOfT, JsonDeserializationContext context) throws JsonParseException {
-        JsonObject jsonObject = json.getAsJsonObject();
-
-        return jsonObject;
+        return json.getAsJsonObject();
     }
 }

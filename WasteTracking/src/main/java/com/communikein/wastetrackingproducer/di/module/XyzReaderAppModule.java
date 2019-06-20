@@ -14,6 +14,10 @@ import javax.inject.Singleton;
 import dagger.Module;
 import dagger.Provides;
 
+/**
+ * Class necessary to provide access to the Application Context, DB, Web API or the Repository
+ * (single source of truth).
+ */
 @Module
 public class XyzReaderAppModule {
 

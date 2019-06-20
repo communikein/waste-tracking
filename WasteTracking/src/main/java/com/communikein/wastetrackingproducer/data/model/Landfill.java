@@ -9,7 +9,10 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
-
+/**
+ * This class represents the Landfill object. It is not used in this first part of the PoC, but is
+ * necessary for the final project as it is one of the final destinations of the Waste.
+ */
 public class Landfill implements Parcelable {
 
     @SerializedName(BlockEntry.COLUMN_LANDFILL_ID)

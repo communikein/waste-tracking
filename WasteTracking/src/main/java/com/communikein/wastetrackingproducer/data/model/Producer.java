@@ -12,7 +12,9 @@ import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.google.gson.annotations.SerializedName;
 
-
+/**
+ * This class represents the Producer object. The Producer is the entity that produces Waste.
+ */
 public class Producer implements Parcelable {
 
     @SerializedName(BlockEntry.COLUMN_PRODUCER_ID)
