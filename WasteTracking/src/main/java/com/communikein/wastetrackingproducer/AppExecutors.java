@@ -10,6 +10,9 @@ import java.util.concurrent.Executors;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+/**
+ * This class provides a singleton access to separate threads for DB, Network and UI.
+ */
 @Singleton
 public class AppExecutors {
 

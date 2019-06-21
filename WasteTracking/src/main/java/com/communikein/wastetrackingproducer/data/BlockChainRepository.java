@@ -21,7 +21,6 @@ import javax.inject.Singleton;
 /**
  * This class provides the single source of truth to interface with the data used by the
  * application, being it the DB or the Web APIs.
- * This is the only class the programmer will use from the UI.
  */
 @Singleton
 public class BlockChainRepository {

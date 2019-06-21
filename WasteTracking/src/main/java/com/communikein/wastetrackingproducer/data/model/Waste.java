@@ -39,16 +39,18 @@ import static com.communikein.wastetrackingproducer.data.contentprovider.BlockCh
 @Entity(tableName = BlockChainContract.BlockEntry.TABLE_NAME)
 public class Waste implements Parcelable {
 
+    // The following fields represent the supported types of waste
     public static final String WASTE_TYPE_PLASTIC = "plastic";
     public static final String WASTE_TYPE_METAL = "metal";
     public static final String WASTE_TYPE_GLASS = "glass";
     public static final String WASTE_TYPE_PAPER = "paper";
     public static final String WASTE_TYPE_ORGANIC = "organic";
 
+
+    // The following fields are always used when a new Waste is created. They are mandatory fields.
     @SerializedName(COLUMN_WASTE_ID)
     @PrimaryKey
     @ColumnInfo(index = true, name = COLUMN_WASTE_ID)
-    @NonNull
     private String id;
 
     @SerializedName(COLUMN_WASTE_TYPE)
@@ -72,6 +74,7 @@ public class Waste implements Parcelable {
     private String parameters;
 
 
+    // The following field is used when the Waste goes through a Treatment Plant
     @SerializedName(COLUMN_TREATMENT_TYPE)
     @ColumnInfo(name = COLUMN_TREATMENT_TYPE)
     private String treatmentType;

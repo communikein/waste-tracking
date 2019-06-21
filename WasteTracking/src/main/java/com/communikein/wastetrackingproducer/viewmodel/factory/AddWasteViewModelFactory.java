@@ -9,6 +9,10 @@ import com.communikein.wastetrackingproducer.viewmodel.AddWasteViewModel;
 
 import javax.inject.Inject;
 
+/**
+ * This class is necessary to inject the ViewModel in the related Activity.
+ * Each ViewModel will have its own ViewModelFactory.
+ */
 public class AddWasteViewModelFactory extends ViewModelProvider.NewInstanceFactory {
 
     private final BlockChainRepository mRepository;
